@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="build" name="PJS">
+
+	<!-- The "ClusterFactory" used for PJSInfo -->
+	<property name="PJSInfo.ClusterFactory" value="it.polito.dp2.PJS.Random.ClusterFactoryImpl" />
+
+	<!-- The default output file for ClusterSerializer -->
+	<property name="output" location="${java.io.tmpdir}/out1.xml"/>
+
+	<property name="PJS.location" location="." />
+	<property name="lab2.location" location="." />
+
+	<property name="srcdir" location="${lab2.location}/src" />
+	<property name="builddir" location="${lab2.location}/build" />
+	<property name="libdir" location="${lab2.location}/lib" />
+
+	<property name="debug" value="true" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+
+	<!-- The classpath to be used for compilation of the solution -->
+	<path id="PJS.classpath">
+		<pathelement location="${PJS.location}/lib/PJS.jar" />
+	</path>
+	
+	<property name="testcase" value="0" />
+
+	<target name="setseed" unless="seed">
+		<tstamp>
+			<format property="seed" pattern="HHmmss" />
+		</tstamp>
+	</target>
+
+	<target name="build" >
+		<echo>Building the submitted solution (if needed)...</echo>
+		<mkdir dir="${builddir}" />
+		<javac destdir="${builddir}" debug="${debug}" debuglevel="${debuglevel}" source="${source}" target="${target}" includeantruntime="false">
+			<src path="${srcdir}"/>
+			<include name="it/polito/dp2/PJS/sol2/**" />
+			<classpath>
+				<path refid="PJS.classpath" />
+			</classpath>
+		</javac>
+		<echo>Done.</echo>
+	</target>
+
+	<target name="buildPJSInfo">
+		<echo>Building PJSInfo (if needed)...</echo>
+		<mkdir dir="${builddir}" />
+		<javac destdir="${builddir}" debug="${debug}" debuglevel="${debuglevel}" source="${source}" target="${target}" includeantruntime="false">
+			<src path="${srcdir}" />
+			<include name="it/polito/dp2/PJS/lab2/PJSInfo.java" />
+			<classpath>
+				<path refid="PJS.classpath" />
+			</classpath>
+		</javac>
+		<echo>Done.</echo>
+	</target>
+
+	<target name="clean">
+		<delete dir="${builddir}" />
+	</target>
+
+	<target name="PJSInfo" depends="buildPJSInfo, setseed">
+		<java classname="it.polito.dp2.PJS.lab2.PJSInfo" failonerror="true" fork="yes">
+			<sysproperty key="it.polito.dp2.PJS.Random.seed" value="${seed}"/>
+			<sysproperty key="it.polito.dp2.PJS.Random.testcase" value="${testcase}"/>
+			<jvmarg line="-Dit.polito.dp2.PJS.ClusterFactory=${PJSInfo.ClusterFactory}" />
+			<classpath>
+				<path refid="PJS.classpath" />
+				<pathelement location="${PJS.location}/lib/RandomCluster.jar"/>
+				<pathelement path="${builddir}"/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="ClusterSerializer" depends="setseed">
+		<echo>Output file: ${output}</echo>
+		<echo>Testcase: ${testcase}</echo>
+		<echo>Seed: ${seed}</echo>
+		<echo />
+		<antcall target="ClusterSerializer.test">
+			<param name="outfile" value="${output}" />
+			<param name="test.seed" value="${seed}" />
+			<param name="test.case" value="${testcase}" />
+		</antcall>
+	</target>
+
+	<target name="runFuncTest" depends="setseed">
+		<antcall target="runTest.real">
+			<param name="test.seed" value="${seed}" />
+			<param name="test.case" value="${testcase}" />
+			<param name="test.class" value="it.polito.dp2.PJS.lab2.tests.ClusterTests" />
+			<param name="exit.code" value="126" />
+		</antcall>
+	</target>
+
+	<target name="ClusterSerializer.test" depends="build">
+		<java classname="it.polito.dp2.PJS.sol2.ClusterSerializer" failonerror="true" fork="yes">
+			<jvmarg line="-Dit.polito.dp2.PJS.ClusterFactory=${PJSInfo.ClusterFactory}" />
+			<sysproperty key="it.polito.dp2.PJS.ClusterFactory" value="${PJSInfo.ClusterFactory}" />
+			<sysproperty key="it.polito.dp2.PJS.Random.seed" value="${test.seed}"/>
+			<sysproperty key="it.polito.dp2.PJS.Random.testcase" value="${test.case}"/>
+			<arg value="${outfile}" />
+			<classpath>
+				<path refid="PJS.classpath" />
+				<pathelement location="${PJS.location}/lib/RandomCluster.jar"/>
+				<pathelement path="${builddir}" />
+			</classpath>
+		</java>
+		<echo>Done.</echo>
+	</target>
+
+	<target name="runTest.real" depends="build">
+		<tempfile property="temp.dir" destdir="${lab2.location}" prefix="temp"/>
+		<tempfile property="temp.xmlfile" destdir="${temp.dir}" prefix="out" suffix=".xml"/>
+
+		<echo>The tests will run using '${temp.dir}' as working directory.</echo>
+		<echo>Testcase: ${test.case}</echo>
+		<echo>Seed: ${test.seed}</echo>
+		<echo />
+		<echo>Copying the dtd/cluster.dtd file to the working directory...</echo>
+		<copy file="${lab2.location}/dtd/cluster.dtd" todir="${temp.dir}"/>
+		<echo>File copied.</echo>
+
+		<antcall target="ClusterSerializer.test">
+			<param name="outfile" value="${temp.xmlfile}"/>
+			<param name="test.seed" value="${test.seed}"/>
+			<param name="test.case" value="${test.case}"/>
+		</antcall>
+
+		<echo>Validating the generated XML file: ${temp.xmlfile}</echo>
+		<java fork="yes" classname="it.polito.dp2.lab2.xml.XMLValidator" failonerror="false" dir="${temp.dir}" resultproperty="validation_result">
+			<arg path="${temp.xmlfile}"/>
+			<classpath>
+				<pathelement location="${PJS.location}/lib/lab2.jar"/>
+			</classpath>
+		</java>
+		<fail status="125" message="*** XML validation FAILED ***">
+			<condition>
+				<not>
+					<equals arg1="0" arg2="${validation_result}"/>
+				</not>
+			</condition>
+		</fail>
+		<echo>*** XML file validated ***</echo>
+
+		<junit printsummary="yes" dir="${temp.dir}" fork="yes" haltonfailure="no" showoutput="no" filtertrace="true">
+			<sysproperty key="it.polito.dp2.PJS.Random.testcase" value="${test.case}"/>
+			<sysproperty key="it.polito.dp2.sol2.Cluster.file" value="${temp.xmlfile}"/>
+			<sysproperty key="it.polito.dp2.PJS.Random.seed" value="${test.seed}"/>
+			<formatter type="brief" usefile="false"/>
+			<test haltonfailure="no" failureproperty="test_failed" name="${test.class}"/>
+			<classpath>
+				<path refid="PJS.classpath" />
+				<pathelement location="${PJS.location}/lib/RandomCluster.jar"/>
+				<pathelement path="${builddir}" />
+				<pathelement location="${PJS.location}/lib/lab2.jar"/>
+				<pathelement location="${PJS.location}/lib/junit-4.5.jar"/>
+			</classpath>
+		</junit>
+		<fail if="test_failed" status="${exit.code}" message="*** Tests FAILED ***"/>
+		<echo>*** Tests passed  ***</echo>
+		<delete dir="${temp.dir}"/>
+	</target>
+
+
+</project>

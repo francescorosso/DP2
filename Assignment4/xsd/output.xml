@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cluster xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="OK" masterHost="host25" name="PJSCluster" xsi:noNamespaceSchemaLocation="PJSInfo.xsd">
+    <hosts>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host27"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host13"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host10"/>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host22"/>
+        <host memory="4096" load="0" status="OK" type="SERVER" name="host20"/>
+        <host memory="256" load="0" status="OK" type="SERVER" name="host16"/>
+        <host memory="256" load="0" status="OK" type="SERVER" name="host1"/>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host4"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host29"/>
+        <host memory="2048" load="0" status="OK" type="SERVER" name="host30"/>
+        <host memory="-1" load="-1" status="UNAVAIL" type="SERVER" name="host18"/>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host7"/>
+        <host memory="4096" load="0" status="OK" type="SERVER" name="host14"/>
+        <host memory="1024" load="0" status="OK" type="MASTER" name="host25"/>
+        <host memory="256" load="0" status="OK" type="SERVER" name="host33"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host24"/>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host31"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host0"/>
+        <host memory="512" load="0" status="OK" type="SERVER" name="host12"/>
+        <host memory="512" load="0" status="OK" type="SERVER" name="host34"/>
+        <host memory="512" load="0" status="OK" type="SERVER" name="host6"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host11"/>
+        <host memory="4096" load="0" status="OK" type="SERVER" name="host3"/>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host5"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host9"/>
+        <host memory="2048" load="0" status="OK" type="SERVER" name="host28"/>
+        <host memory="-1" load="-1" status="UNAVAIL" type="SERVER" name="host26"/>
+        <host memory="-1" load="-1" status="OK" type="CLIENT" name="host21"/>
+        <host memory="2048" load="0" status="OK" type="SERVER" name="host2"/>
+        <host memory="1024" load="0" status="OK" type="SERVER" name="host8"/>
+        <host memory="-1" load="-1" status="UNAVAIL" type="SERVER" name="host19"/>
+        <host memory="256" load="0" status="OK" type="SERVER" name="host15"/>
+        <host memory="2048" load="0" status="OK" type="SERVER" name="host17"/>
+        <host memory="-1" load="-1" status="UNAVAIL" type="SERVER" name="host23"/>
+        <host memory="2048" load="0" status="OK" type="SERVER" name="host32"/>
+    </hosts>
+    <jobGroups>
+        <jobGroup description="This is the 'default' group." name="default"/>
+    </jobGroups>
+    <jobs/>
+</cluster>

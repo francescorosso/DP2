@@ -1,0 +1,35 @@
+# DP2Cluster - DataTypes documentation (XML schema) - November 01, 2012
+#
+# Attached to this file you should find:
+#   PJSInfo.xsd -> DataType XML schema
+#   PJSInfo.xml -> DataType example, following the XML schema 
+#
+
+Main rules used to design the XML schema:
+* Have a main element for each group of same elements that works as a "root-element" for that group.
+  This simplifies the visual and conceptual separation of different elements.
+* Large usage of attributes to improve readability.
+* Large usage of KEYs-KEYREFs in order to avoid redundancy.
+* CamelCase naming convention for attributes keys.
+* Uppercase naming convention for enumerations values.
+* Value types strongly restricted to required types. 
+
+Finally, the XML structure (elements with multiplicity, for attributes see "cluster.dtd" attached) is the following:
+
+cluster (1)
+    |
+    + hosts (?)
+    |    |
+    |    + host (*)
+    |
+    + jobGroups (1)
+    |    |
+    |    + jobGroup (+)
+    |
+    + jobs (?)
+         |
+         + job (*)
+         
+ Notes:
+ * At least one jobGroup with name "default" must be present.
+ * Such this schema requires the jobGroup "default" definition, otherwise it should not work properly.

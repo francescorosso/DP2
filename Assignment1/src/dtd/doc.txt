@@ -1,0 +1,34 @@
+# DP2Cluster - DataTypes documentation (DTD) - October 31, 2012
+#
+# Attached to this file you should find:
+#   cluster.dtd -> DataType DTD
+#   cluster.xml -> DataType example, following the DTD 
+#
+
+Main rules used to design the DTD:
+* Have a main element for each group of same elements that works as a "root-element" for that group.
+  This simplifies the visual and conceptual separation of different elements.
+* Large usage of attributes to improve readability.
+* Large usage of IDs-IDREFs in order to avoid redundancy.
+* CamelCase naming convention for attributes keys.
+* Uppercase naming convention for enumerations values.
+
+Finally, the XML structure (elements with multiplicity, for attributes see "cluster.dtd" attached) is the following:
+
+cluster (1)
+    |
+    + hosts (?)
+    |    |
+    |    + host (*)
+    |
+    + jobGroups (1)
+    |    |
+    |    + jobGroup (+)
+    |
+    + jobs (?)
+         |
+         + job (*)
+         
+ Notes:
+ * At least one jobGroup with name "default" must be present.
+ * Such this DTD requires the jobGroup "default" definition, otherwise it should not work properly.

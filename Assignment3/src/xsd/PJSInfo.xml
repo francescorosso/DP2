@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<cluster xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PJSInfo.xsd"
+	status="OK" name="testCluster" masterHost="node1">
+	<hosts>
+		<host name="node1" type="MASTER" status="OK" />
+		<host name="node2" type="SERVER" status="OK" />
+		<host name="client1" type="CLIENT" status="OK" />
+	</hosts>
+	<jobGroups>
+		<jobGroup name="default"/>
+	</jobGroups>
+	<jobs>
+		<job submissionHost="client1" submissionTime="1351095690242" state="PENDING" jobID="_1" />
+	</jobs>
+</cluster>
