@@ -14,7 +14,7 @@ public class ClusterFactory extends it.polito.dp2.PJS.ClusterFactory {
 	public it.polito.dp2.PJS.Cluster newCluster() throws it.polito.dp2.PJS.ClusterException {
 
 		//get source file
-		String sourceFilePath = System.getProperty("it.polito.dp2.sol4.Cluster.file");
+		String sourceFilePath = System.getProperty("it.polito.dp2.PJS.sol4.Cluster.file");
 		
 		if (sourceFilePath != null) {
 			File sourceFile = new File(sourceFilePath);
@@ -34,7 +34,7 @@ public class ClusterFactory extends it.polito.dp2.PJS.ClusterFactory {
 				throw new it.polito.dp2.PJS.ClusterException("'" + sourceFilePath + "' is not a file...");
 			}
 		} else {
-			throw new it.polito.dp2.PJS.ClusterException("No source file provided. Set 'it.polito.dp2.sol2.Cluster.file' property with source file path...");
+			throw new it.polito.dp2.PJS.ClusterException("No source file provided. Set 'it.polito.dp2.sol4.Cluster.file' property with source file path...");
 		}
 	}
 	
