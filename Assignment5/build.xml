@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="run-server" name="Assignment5">
+
+	<!-- The random "ClusterFactory" -->
+	<property name="Random.ClusterFactory" value="it.polito.dp2.PJS.Random.ClusterFactoryImpl" />
+	<property name="URL" value="http://localhost:8181/PJSInfoService"/>
+	<property name="WSDL" value="${URL}?wsdl"/>
+	
+   	<property name="BASE" value="PJSInfo"/>
+	
+	<property name="PJS.location" location="." />
+	<property name="lab5.location" location="." />
+
+	<property name="src.dir" location="${lab5.location}/src" />
+	<property name="lib.dir" location="${PJS.location}/lib" />
+	<property name="build.dir" location="${lab5.location}/build" />
+	<property name="gen.dir" location="${lab5.location}/generated" />
+	<property name="package" value="it.polito.dp2.PJS.sol5.gen"/>
+	
+	<property name="debug" value="true" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${lib.dir}/RandomCluster.jar"/>
+		<pathelement location="${lib.dir}/junit-4.5.jar"/>
+		<pathelement location="${lib.dir}/PJS.jar"/>
+		<pathelement location="${lib.dir}/lab5.jar"/>
+	</path>
+	
+	<property name="testcase" value="2" />
+
+	<!-- Target setseed	-->
+	<target name="setseed" unless="seed">
+		<tstamp>
+			<format property="seed" pattern="HHmmss" />
+		</tstamp>
+	</target>
+	
+	<!-- Target init	-->
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${gen.dir}" />
+	</target>
+	
+	<!-- Target run-server	-->
+	<target name="run-server" depends="setseed">
+		<java fork="yes" jar="${lib.dir}/${BASE}Server.jar" dir=".">
+			<jvmarg line="-Dit.polito.dp2.PJS.ClusterFactory=${Random.ClusterFactory}" />
+			<sysproperty key="it.polito.dp2.PJS.ClusterFactory" value="${Random.ClusterFactory}" />
+			<sysproperty key="it.polito.dp2.PJS.Random.seed" value="${seed}"/>
+			<sysproperty key="it.polito.dp2.PJS.Random.testcase" value="${testcase}"/>
+		</java>
+	</target>
+	
+	<!-- define the "compile.wsdl" target -->
+	<target name="compile-wsdl" depends="init">
+	    <echo message = "${WSDL}"/> 
+	    <exec executable="wsimport">
+	        <arg line="-d '${build.dir}' -p '${package}' -s '${gen.dir}' -keep ${WSDL}"/>
+	    </exec>
+	</target>   
+	
+	<!-- Target buildClient -->
+	<target name="buildClient" depends="init, compile-wsdl">
+		<echo>Building the submitted solution (if needed)...</echo>
+		<javac destdir="${build.dir}" debug="${debug}" debuglevel="${debuglevel}" source="${source}" target="${target}" includeantruntime="false">
+			<src path="${src.dir}"/>
+			<include name="it/polito/dp2/PJS/sol5/**" />
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+		<echo>Done.</echo>
+	</target>
+
+	<!-- Target runFuncTest	-->
+	<target name="runFuncTest" depends="setseed">
+		<antcall target="runTest.real">
+			<param name="test.seed" value="${seed}" />
+			<param name="test.case" value="${testcase}" />
+			<param name="test.class" value="it.polito.dp2.PJS.lab5.tests.ClusterTests" />
+			<param name="exit.code" value="126" />
+			<param name="url" value="${URL}"/>
+		</antcall>
+	</target>
+
+	<!-- Target runTest.real	-->
+	<target name="runTest.real" depends="buildClient">
+		<junit printsummary="yes" dir="." fork="yes" haltonfailure="no" showoutput="no" filtertrace="true">
+			<sysproperty key="it.polito.dp2.PJS.Random.testcase" value="${test.case}"/>
+			<sysproperty key="it.polito.dp2.PJS.Random.seed" value="${test.seed}"/>
+			<sysproperty key="it.polito.dp2.PJS.sol5.URL" value="${url}"/>
+			<formatter type="brief" usefile="false"/>
+			<test haltonfailure="no" failureproperty="test_failed" name="${test.class}"/>
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</junit>
+		<fail if="test_failed" status="${exit.code}" message="*** Tests FAILED ***"/>
+		<echo>*** Tests passed  ***</echo>
+		<delete dir="${temp.dir}"/>
+	</target>
+
+	<!-- Target clean	-->
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${gen.dir}" />
+	</target>
+
+</project>
