@@ -1,7 +1,7 @@
 package it.polito.dp2.PJS.sol5;
 
 import it.polito.dp2.PJS.Cluster;
-import it.polito.dp2.PJS.sol5.gen.PJSInfoService;
+import it.polito.dp2.PJS.lab5.gen.PJSInfoService;
 
 import java.net.URL;
 
@@ -18,7 +18,7 @@ public class ClusterFactory extends it.polito.dp2.PJS.ClusterFactory {
 			
 			if (serviceURL != null) {
 					try {
-						PJSInfoService service = new PJSInfoService(new URL(serviceURL));
+						PJSInfoService service = new PJSInfoService();
 						
 						cluster = this.parse(service);
 					} catch (Exception e) {
