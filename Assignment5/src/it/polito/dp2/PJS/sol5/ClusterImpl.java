@@ -4,12 +4,12 @@ import it.polito.dp2.PJS.Cluster;
 import it.polito.dp2.PJS.Host;
 import it.polito.dp2.PJS.Job;
 import it.polito.dp2.PJS.JobGroup;
-import it.polito.dp2.PJS.lab5.gen.GetHostsRequest;
-import it.polito.dp2.PJS.lab5.gen.GetHostsResponse;
-import it.polito.dp2.PJS.lab5.gen.PJSInfo;
-import it.polito.dp2.PJS.lab5.gen.PJSInfoService;
-import it.polito.dp2.PJS.lab5.gen.THost;
-import it.polito.dp2.PJS.lab5.gen.UnknownNames_Exception;
+import it.polito.dp2.PJS.sol5.gen.GetHostsRequest;
+import it.polito.dp2.PJS.sol5.gen.GetHostsResponse;
+import it.polito.dp2.PJS.sol5.gen.PJSInfo;
+import it.polito.dp2.PJS.sol5.gen.PJSInfoService;
+import it.polito.dp2.PJS.sol5.gen.THost;
+import it.polito.dp2.PJS.sol5.gen.UnknownNames_Exception;
 
 import java.security.InvalidParameterException;
 import java.util.Calendar;
