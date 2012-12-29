@@ -14,20 +14,31 @@
 		<fileset dir="${dist.dir}" />
 	</path>
 
-	<target name="clean">
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${generated.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+	
+	<target name="clean" depends="init">
 		<delete includeEmptyDirs="true">
 			<fileset dir="${build.dir}" includes="**/*" defaultexcludes="no" />
+			<fileset dir="${generated.dir}" includes="**/*" defaultexcludes="no" />
 		</delete>
 		<delete dir="${dist.dir}" />
 	</target>
 	
-	<target name="init" depends="clean">
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${dist.dir}" />
+	<target name="generate-artifacts" depends="init">
+	    <exec executable="xjc">
+	        <arg line="-d ${generated.dir} -p it.polito.dp2.PJS.sol6.server.xjc ${custom.dir}/PJSInfo.xsd" />
+	    </exec>
+		<exec executable="wsimport">
+			<arg line="-keep -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport ${basedir}/wsdl/PJSMaster/PJSMaster.wsdl" />
+		</exec>
 	</target>
 	
-	<target name="compile-custom" depends="init">
-		<javac srcdir="${custom.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
+	<target name="compile-generated" depends="generate-artifacts">
+		<javac srcdir="${generated.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
 			<classpath refid="lib.path.id" />
 		</javac>			
 	</target>
@@ -38,7 +49,7 @@
 		</javac>
 	</target>
 	
-	<target name="build-jar" depends="compile-custom,compile-src">
+	<target name="build-jar" depends="compile-generated,compile-src">
 		<jar jarfile="${dist.dir}/MasterHostServer.jar">
 			<fileset dir="${build.dir}" />
 			<fileset dir="${basedir}">

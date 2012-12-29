@@ -21,7 +21,7 @@ import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
-@WebService(name = "PJSMaster", serviceName = "PJSMasterService")
+@WebService(name = "PJSMaster", serviceName = "PJSMasterService", wsdlLocation = "wsdl/PJSMaster/PJSMaster.wsdl")
 public class PJSMasterImpl implements PJSMaster {
 
 	private Cluster cluster;

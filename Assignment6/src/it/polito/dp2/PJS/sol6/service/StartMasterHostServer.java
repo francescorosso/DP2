@@ -62,8 +62,8 @@ public class StartMasterHostServer {
 		
 		cluster.setJobs(new ObjectFactory().createClusterJobs());
 		
-//		new ServicePublisher("http://localhost:8085/", new PJSDispatchImpl()).start();
-//		new ServicePublisher("http://localhost:8086/", new PJSDispatchImpl()).start();
+		new ServicePublisher("http://localhost:8085/", new PJSDispatchImpl()).start();
+		new ServicePublisher("http://localhost:8086/", new PJSDispatchImpl()).start();
 		
 		try {
 			Thread.sleep(1000);

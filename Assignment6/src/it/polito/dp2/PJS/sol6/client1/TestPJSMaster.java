@@ -13,11 +13,16 @@ public class TestPJSMaster {
 		
 		PJSMasterService service = new PJSMasterService(new URL("http://localhost:8182/PJSMaster?wsdl"));
 		PJSMaster port = service.getPJSMasterPort();
-//		Object output = port.submit("cat", "pippo");
-//		Object output = port.getClusterName();
-		Object output = port.getHostNames();
 		
-		System.out.println(output);
+		try {
+			Object output = port.submit("cat", "pippo");
+	//		Object output = port.getClusterName();
+	//		Object output = port.getHostNames();
+			
+			System.out.println(output);
+		} catch (NoFreeExecutionHost_Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
