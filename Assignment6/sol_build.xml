@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<project name="Assignment6" default="build-server" basedir=".">
+
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="generated.dir" value="${basedir}/generated" />
+	<property name="custom.dir" value="${basedir}/custom" />
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="dist.dir" value="${basedir}/dist" />
+
+	<path id="lib.path.id">
+		<fileset dir="${lib.dir}" />
+		<fileset dir="${dist.dir}" />
+	</path>
+
+	<target name="clean">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${build.dir}" includes="**/*" defaultexcludes="no" />
+		</delete>
+		<delete dir="${dist.dir}" />
+	</target>
+	
+	<target name="init" depends="clean">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+	
+	<target name="compile-custom" depends="init">
+		<javac srcdir="${custom.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
+			<classpath refid="lib.path.id" />
+		</javac>			
+	</target>
+	
+	<target name="compile-src" depends="init">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
+			<classpath refid="lib.path.id" />
+		</javac>
+	</target>
+	
+	<target name="build-jar" depends="compile-custom,compile-src">
+		<jar jarfile="${dist.dir}/MasterHostServer.jar">
+			<fileset dir="${build.dir}" />
+			<fileset dir="${basedir}">
+				<include name="wsdl/**/*" />
+				<include name="xsd/**/*" />
+				<include name="xml/**/*" />
+				<include name="custom/**/*" />
+			</fileset>
+		</jar>
+		<echo>Built PJSMasterServer.jar...</echo>
+	</target>
+	
+	<target name="build-server" depends="init,build-jar">
+		<java fork="true" classname="it.polito.dp2.PJS.sol6.service.StartMasterHostServer">
+			<classpath refid="lib.path.id" />
+		</java>
+	</target>
+
+</project>
