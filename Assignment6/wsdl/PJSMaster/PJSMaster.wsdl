@@ -1,173 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions
-	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-	xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
-	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-	xmlns:tns="http://service.sol6.PJS.dp2.polito.it/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://service.sol6.PJS.dp2.polito.it/"
-	name="PJSMasterService">
-	<types>
-		<xs:schema xmlns:tns="http://service.sol6.PJS.dp2.polito.it/"
-			xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
-			targetNamespace="http://service.sol6.PJS.dp2.polito.it/">
-
-			<xs:element name="NoFreeExecutionHost" type="tns:NoFreeExecutionHost" />
-
-			<xs:element name="getHostNames" type="tns:getHostNames" />
-
-			<xs:element name="getHostNamesResponse" type="tns:getHostNamesResponse" />
-
-			<xs:element name="getHosts" type="tns:getHosts" />
-
-			<xs:element name="getHostsResponse" type="tns:getHostsResponse" />
-
-			<xs:element name="submit" type="tns:submit" />
-
-			<xs:element name="submitResponse" type="tns:submitResponse" />
-
-			<xs:complexType name="getHostNames">
-				<xs:sequence />
-			</xs:complexType>
-
-			<xs:complexType name="getHostNamesResponse">
-				<xs:sequence>
-					<xs:element name="return" type="xs:string" nillable="true"
-						minOccurs="0" maxOccurs="unbounded" />
-				</xs:sequence>
-			</xs:complexType>
-
-			<xs:complexType name="getHosts">
-				<xs:sequence />
-			</xs:complexType>
-
-			<xs:complexType name="getHostsResponse">
-				<xs:sequence>
-					<xs:element name="return" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="host" nillable="true" minOccurs="0"
-									maxOccurs="unbounded">
-									<xs:complexType>
-										<xs:sequence />
-										<xs:attribute name="name" type="xs:string" use="required" />
-										<xs:attribute name="type" type="xs:string" use="required" />
-										<xs:attribute name="status" type="xs:string" use="required" />
-										<xs:attribute name="load" type="xs:int" />
-										<xs:attribute name="memory" type="xs:int" />
-									</xs:complexType>
-								</xs:element>
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-				</xs:sequence>
-			</xs:complexType>
-
-			<xs:complexType name="submit">
-				<xs:sequence>
-					<xs:element name="arg0" type="xs:string" minOccurs="0" />
-					<xs:element name="arg1" type="xs:string" minOccurs="0" />
-				</xs:sequence>
-			</xs:complexType>
-
-			<xs:complexType name="submitResponse">
-				<xs:sequence>
-					<xs:element name="return" type="xs:integer" minOccurs="0" />
-				</xs:sequence>
-			</xs:complexType>
-
-			<xs:complexType name="NoFreeExecutionHost">
-				<xs:sequence>
-					<xs:element name="message" type="xs:string" minOccurs="0" />
-				</xs:sequence>
-			</xs:complexType>
-		</xs:schema>
-	</types>
-	<message name="getHosts">
-		<part name="parameters" element="tns:getHosts" />
-	</message>
-	<message name="getHostsResponse">
-		<part name="parameters" element="tns:getHostsResponse" />
-	</message>
-	<message name="getHostNames">
-		<part name="parameters" element="tns:getHostNames" />
-	</message>
-	<message name="getHostNamesResponse">
-		<part name="parameters" element="tns:getHostNamesResponse" />
-	</message>
-	<message name="submit">
-		<part name="parameters" element="tns:submit" />
-	</message>
-	<message name="submitResponse">
-		<part name="parameters" element="tns:submitResponse" />
-	</message>
-	<message name="NoFreeExecutionHost">
-		<part name="fault" element="tns:NoFreeExecutionHost" />
-	</message>
-	<portType name="PJSMaster">
-		<operation name="getHosts">
-			<input
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostsRequest"
-				message="tns:getHosts" />
-			<output
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostsResponse"
-				message="tns:getHostsResponse" />
-		</operation>
-		<operation name="getHostNames">
-			<input
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostNamesRequest"
-				message="tns:getHostNames" />
-			<output
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostNamesResponse"
-				message="tns:getHostNamesResponse" />
-		</operation>
-		<operation name="submit">
-			<input
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitRequest"
-				message="tns:submit" />
-			<output
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitResponse"
-				message="tns:submitResponse" />
-			<fault message="tns:NoFreeExecutionHost" name="NoFreeExecutionHost"
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submit/Fault/NoFreeExecutionHost" />
-		</operation>
-	</portType>
-	<binding name="PJSMasterPortBinding" type="tns:PJSMaster">
-		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
-			style="document" />
-		<operation name="getHosts">
-			<soap:operation soapAction="" />
-			<input>
-				<soap:body use="literal" />
-			</input>
-			<output>
-				<soap:body use="literal" />
-			</output>
-		</operation>
-		<operation name="getHostNames">
-			<soap:operation soapAction="" />
-			<input>
-				<soap:body use="literal" />
-			</input>
-			<output>
-				<soap:body use="literal" />
-			</output>
-		</operation>
-		<operation name="submit">
-			<soap:operation soapAction="" />
-			<input>
-				<soap:body use="literal" />
-			</input>
-			<output>
-				<soap:body use="literal" />
-			</output>
-			<fault name="NoFreeExecutionHost">
-				<soap:fault name="NoFreeExecutionHost" use="literal" />
-			</fault>
-		</operation>
-	</binding>
-	<service name="PJSMasterService">
-		<port name="PJSMasterPort" binding="tns:PJSMasterPortBinding">
-			<soap:address location="http://localhost:8182/PJSMaster" />
-		</port>
-	</service>
+<!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2.4-b01. -->
+<!-- Generated by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2.4-b01. -->
+<definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://service.sol6.PJS.dp2.polito.it/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://service.sol6.PJS.dp2.polito.it/" name="PJSMasterService">
+<types>
+<xsd:schema>
+<xsd:import namespace="http://service.sol6.PJS.dp2.polito.it/" schemaLocation="http://localhost:8182/PJSMaster?xsd=1"/>
+</xsd:schema>
+</types>
+<message name="getHosts">
+<part name="parameters" element="tns:getHosts"/>
+</message>
+<message name="getHostsResponse">
+<part name="parameters" element="tns:getHostsResponse"/>
+</message>
+<message name="getHostNames">
+<part name="parameters" element="tns:getHostNames"/>
+</message>
+<message name="getHostNamesResponse">
+<part name="parameters" element="tns:getHostNamesResponse"/>
+</message>
+<message name="submit">
+<part name="parameters" element="tns:submit"/>
+</message>
+<message name="submitResponse">
+<part name="parameters" element="tns:submitResponse"/>
+</message>
+<message name="NoFreeExecutionHost">
+<part name="fault" element="tns:NoFreeExecutionHost"/>
+</message>
+<portType name="PJSMaster">
+<operation name="getHosts">
+<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostsRequest" message="tns:getHosts"/>
+<output wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostsResponse" message="tns:getHostsResponse"/>
+</operation>
+<operation name="getHostNames">
+<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostNamesRequest" message="tns:getHostNames"/>
+<output wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostNamesResponse" message="tns:getHostNamesResponse"/>
+</operation>
+<operation name="submit">
+<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitRequest" message="tns:submit"/>
+<output wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitResponse" message="tns:submitResponse"/>
+<fault message="tns:NoFreeExecutionHost" name="NoFreeExecutionHost" wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submit/Fault/NoFreeExecutionHost"/>
+</operation>
+</portType>
+<binding name="PJSMasterPortBinding" type="tns:PJSMaster">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="getHosts">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="getHostNames">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="submit">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="NoFreeExecutionHost">
+<soap:fault name="NoFreeExecutionHost" use="literal"/>
+</fault>
+</operation>
+</binding>
+<service name="PJSMasterService">
+<port name="PJSMasterPort" binding="tns:PJSMasterPortBinding">
+<soap:address location="http://localhost:8182/PJSMaster"/>
+</port>
+</service>
 </definitions>

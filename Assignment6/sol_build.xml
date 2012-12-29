@@ -24,16 +24,16 @@
 		<delete includeEmptyDirs="true">
 			<fileset dir="${build.dir}" includes="**/*" defaultexcludes="no" />
 			<fileset dir="${generated.dir}" includes="**/*" defaultexcludes="no" />
+			<fileset dir="${dist.dir}" includes="**/*" defaultexcludes="no" />
 		</delete>
-		<delete dir="${dist.dir}" />
 	</target>
 	
-	<target name="generate-artifacts" depends="init">
+	<target name="generate-artifacts" depends="clean">
 	    <exec executable="xjc">
 	        <arg line="-d ${generated.dir} -p it.polito.dp2.PJS.sol6.server.xjc ${custom.dir}/PJSInfo.xsd" />
 	    </exec>
 		<exec executable="wsimport">
-			<arg line="-keep -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport ${basedir}/wsdl/PJSMaster/PJSMaster.wsdl" />
+			<arg line="-keep -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport http://localhost:8182/PJSMaster?wsdl" />
 		</exec>
 	</target>
 	
@@ -43,7 +43,7 @@
 		</javac>			
 	</target>
 	
-	<target name="compile-src" depends="init">
+	<target name="compile-src" depends="clean">
 		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
 			<classpath refid="lib.path.id" />
 		</javac>
@@ -62,7 +62,7 @@
 		<echo>Built PJSMasterServer.jar...</echo>
 	</target>
 	
-	<target name="build-server" depends="init,build-jar">
+	<target name="build-server" depends="build-jar">
 		<java fork="true" classname="it.polito.dp2.PJS.sol6.service.StartMasterHostServer">
 			<classpath refid="lib.path.id" />
 		</java>

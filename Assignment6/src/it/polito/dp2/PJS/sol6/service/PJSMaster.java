@@ -1,7 +1,6 @@
 package it.polito.dp2.PJS.sol6.service;
 
-
-import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts;
+import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts.Host;
 
 import java.math.BigInteger;
 
@@ -12,12 +11,11 @@ import javax.jws.WebService;
 public interface PJSMaster {
 
 	@WebMethod
-	public BigInteger submit(String cmd, String args) throws Exception;
-
-	@WebMethod
 	public String[] getHostNames();
 
 	@WebMethod
-	public Hosts getHosts();
-	
+	public Host[] getHosts(String[] hostnames);
+
+	@WebMethod
+	public BigInteger submit(String cmd, String stdin) throws NoFreeExecutionHost;
 }

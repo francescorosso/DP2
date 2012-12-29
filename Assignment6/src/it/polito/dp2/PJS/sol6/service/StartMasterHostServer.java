@@ -24,7 +24,7 @@ public class StartMasterHostServer {
 
 		Map<Host, URI> executionHosts = new HashMap<Host, URI>();
 		try {
-			InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("xml/execHosts.xml");
+			InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("execHosts.xml");
 			JAXBContext context = JAXBContext.newInstance("it.polito.dp2.PJS.lab6.tests.gen.jaxb");
 			Hosts hosts = (Hosts) context.createUnmarshaller().unmarshal(is);
 			
