@@ -6,6 +6,9 @@ import it.polito.dp2.PJS.lab6.tests.gen.jaxb.THost;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts.Host;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.JobGroups.JobGroup;
+import it.polito.dp2.PJS.sol6.server.xjc.ClusterStatus;
+import it.polito.dp2.PJS.sol6.server.xjc.HostStatus;
+import it.polito.dp2.PJS.sol6.server.xjc.HostType;
 import it.polito.dp2.PJS.sol6.server.xjc.ObjectFactory;
 
 import java.io.InputStream;
@@ -24,15 +27,15 @@ public class StartMasterHostServer {
 
 		Map<Host, URI> executionHosts = new HashMap<Host, URI>();
 		try {
-			InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("execHosts.xml");
+			InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("xml/execHosts.xml");
 			JAXBContext context = JAXBContext.newInstance("it.polito.dp2.PJS.lab6.tests.gen.jaxb");
 			Hosts hosts = (Hosts) context.createUnmarshaller().unmarshal(is);
 			
 			for (THost host : hosts.getHost()) {
 				Host executionHost = new Host();
 				executionHost.setName(host.getName());
-				executionHost.setType(host.getType().toString());
-				executionHost.setStatus(host.getStatus().toString());
+				executionHost.setType(HostType.fromValue(host.getType().toString()));
+				executionHost.setStatus(HostStatus.fromValue(host.getStatus().toString()));
 				executionHost.setLoad(host.getLoad().intValue());
 				executionHost.setMemory(host.getMemory().intValue());
 				
@@ -48,8 +51,6 @@ public class StartMasterHostServer {
 		
 
 		Cluster cluster = new Cluster();
-		cluster.setName("PJS");
-		cluster.setStatus("OK");
 		
 		cluster.setHosts(new ObjectFactory().createClusterHosts());
 		cluster.getHosts().getHost().addAll(executionHosts.keySet());
@@ -61,6 +62,16 @@ public class StartMasterHostServer {
 		cluster.getJobGroups().getJobGroup().add(defaultJobGroup);
 		
 		cluster.setJobs(new ObjectFactory().createClusterJobs());
+		
+		cluster.setName("PJS");
+		cluster.setStatus(ClusterStatus.UNAVAIL);
+		for (Host host : cluster.getHosts().getHost()) {
+			if (host.getType().equals(HostType.MASTER)) {
+				cluster.setStatus(ClusterStatus.OK);
+				cluster.setMasterHost(host.getName());
+				break;
+			}
+		}
 		
 		new ServicePublisher("http://localhost:8085/", new PJSDispatchImpl()).start();
 		new ServicePublisher("http://localhost:8086/", new PJSDispatchImpl()).start();

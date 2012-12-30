@@ -1,115 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	targetNamespace="http://pad.polito.it/PJSInfo" xmlns:tns="http://pad.polito.it/PJSInfo">
 
-<xsd:element name="cluster">
-	<xsd:complexType>
-		<xsd:sequence minOccurs="0" maxOccurs="1">
-			<xsd:element name="hosts" minOccurs="0" maxOccurs="1">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="host" minOccurs="0" maxOccurs="unbounded">
-							<xsd:complexType>
-								<xsd:attribute name="name" type="xsd:string" use="required" />
-								<xsd:attribute name="type" use="required">
-									<xsd:simpleType>
-										<xsd:restriction base="xsd:string">
-											<xsd:enumeration value="MASTER" />
-											<xsd:enumeration value="SERVER" />
-											<xsd:enumeration value="CLIENT" />
-										</xsd:restriction>
-									</xsd:simpleType>
-								</xsd:attribute>
-								<xsd:attribute name="status" use="required">
-									<xsd:simpleType>
-										<xsd:restriction base="xsd:string">
-											<xsd:enumeration value="OK" />
-											<xsd:enumeration value="UNAVAIL" />
-											<xsd:enumeration value="CLOSED" />
-											<xsd:enumeration value="UNLICENSED" />
-										</xsd:restriction>
-									</xsd:simpleType>
-								</xsd:attribute>
-								<xsd:attribute name="load" type="xsd:int" use="optional" default="0" />
-								<xsd:attribute name="memory" type="xsd:int" use="optional" default="0" />
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="jobGroups" minOccurs="1" maxOccurs="1">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="jobGroup" minOccurs="1" maxOccurs="unbounded">
-							<xsd:complexType>
-								<xsd:attribute name="name" type="xsd:ID" use="required" />
-								<xsd:attribute name="description" type="xsd:string" use="optional" />
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="jobs" minOccurs="0" maxOccurs="1">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="job" minOccurs="0" maxOccurs="unbounded">
-							<xsd:complexType>
-								<xsd:attribute name="jobID" type="xsd:string" use="required" />
-								<xsd:attribute name="state" use="required" >
-									<xsd:simpleType>
-										<xsd:restriction base="xsd:string">
-											<xsd:enumeration value="PENDING" />
-											<xsd:enumeration value="RUNNING" />
-											<xsd:enumeration value="DONE" />
-											<xsd:enumeration value="EXIT" />
-											<xsd:enumeration value="SUSPENDED" />
-										</xsd:restriction>
-									</xsd:simpleType>
-								</xsd:attribute>
-								<xsd:attribute name="submissionHost" type="xsd:string" use="required" />
-								<xsd:attribute name="submissionTime" type="xsd:long" use="required" />
-								<xsd:attribute name="jobGroup" type="xsd:string" use="optional" default="default" />
-								<xsd:attribute name="executionHost" type="xsd:string" use="optional" />
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string" />
-		<xsd:attribute name="masterHost" type="xsd:string" />
-		<xsd:attribute name="status">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="OK" />
-					<xsd:enumeration value="UNAVAIL" />
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-	</xsd:complexType>
-	<xsd:key name="hostNameKey">
-		<xsd:selector xpath="hosts/host" />
-		<xsd:field xpath="@name"></xsd:field>
-	</xsd:key>
-	<xsd:key name="jobGroupNameKey">
-		<xsd:selector xpath="jobGroups/jobGroup" />
-		<xsd:field xpath="@name" />
-	</xsd:key>
-	<xsd:keyref name="masterHostKeyref" refer="hostNameKey">
-		<xsd:selector xpath="." />
-		<xsd:field xpath="@masterHost" />
-	</xsd:keyref>
-	<xsd:keyref name="submissionHostKeyref" refer="hostNameKey">
-		<xsd:selector xpath="jobs/job" />
-		<xsd:field xpath="@submissionHost" />
-	</xsd:keyref>
-	<xsd:keyref name="executionHostKeyref" refer="hostNameKey">
-		<xsd:selector xpath="jobs/job" />
-		<xsd:field xpath="@executionHost" />
-	</xsd:keyref>
-	<xsd:keyref name="jobGroupKeyref" refer="jobGroupNameKey">
-		<xsd:selector xpath="jobs/job" />
-		<xsd:field xpath="@jobGroup" />
-	</xsd:keyref>
-</xsd:element>
+	<xsd:element name="cluster">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0" maxOccurs="1">
+				<xsd:element name="hosts" minOccurs="0" maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="host" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="name" type="xsd:string" use="required" />
+									<xsd:attribute name="type" type="tns:HostType"
+										use="required" />
+									<xsd:attribute name="status" type="tns:HostStatus"
+										use="required" />
+									<xsd:attribute name="load" type="xsd:int" use="optional"
+										default="0" />
+									<xsd:attribute name="memory" type="xsd:int" use="optional"
+										default="0" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="jobGroups" minOccurs="1" maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="jobGroup" minOccurs="1" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="name" type="xsd:ID" use="required" />
+									<xsd:attribute name="description" type="xsd:string"
+										use="optional" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="jobs" minOccurs="0" maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="job" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="jobID" type="xsd:string"
+										use="required" />
+									<xsd:attribute name="state" type="tns:JobStatus" use="required" />
+									<xsd:attribute name="submissionHost" type="xsd:string"
+										use="required" />
+									<xsd:attribute name="submissionTime" type="xsd:long"
+										use="required" />
+									<xsd:attribute name="jobGroup" type="xsd:string"
+										use="optional" default="default" />
+									<xsd:attribute name="executionHost" type="xsd:string"
+										use="optional" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" />
+			<xsd:attribute name="masterHost" type="xsd:string" />
+			<xsd:attribute name="status" type="tns:ClusterStatus" />
+		</xsd:complexType>
 
+		<!-- Restrictions -->
+		<xsd:key name="hostNameKey">
+			<xsd:selector xpath="tns:hosts/tns:host" />
+			<xsd:field xpath="@name"></xsd:field>
+		</xsd:key>
+		<xsd:key name="jobGroupNameKey">
+			<xsd:selector xpath="tns:jobGroups/tns:jobGroup" />
+			<xsd:field xpath="@name" />
+		</xsd:key>
+		<xsd:keyref name="masterHostKeyref" refer="tns:hostNameKey">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="@masterHost" />
+		</xsd:keyref>
+		<xsd:keyref name="submissionHostKeyref" refer="tns:hostNameKey">
+			<xsd:selector xpath="tns:jobs/tns:job" />
+			<xsd:field xpath="@submissionHost" />
+		</xsd:keyref>
+		<xsd:keyref name="executionHostKeyref" refer="tns:hostNameKey">
+			<xsd:selector xpath="tns:jobs/tns:job" />
+			<xsd:field xpath="@executionHost" />
+		</xsd:keyref>
+		<xsd:keyref name="jobGroupKeyref" refer="tns:jobGroupNameKey">
+			<xsd:selector xpath="tns:jobs/tns:job" />
+			<xsd:field xpath="@jobGroup" />
+		</xsd:keyref>
+	</xsd:element>
+
+
+	<!-- Types definition -->
+	<xsd:simpleType name="HostType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="MASTER" />
+			<xsd:enumeration value="SERVER" />
+			<xsd:enumeration value="CLIENT" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="HostStatus">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OK" />
+			<xsd:enumeration value="UNAVAIL" />
+			<xsd:enumeration value="CLOSED" />
+			<xsd:enumeration value="UNLICENSED" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="JobStatus">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="PENDING" />
+			<xsd:enumeration value="RUNNING" />
+			<xsd:enumeration value="DONE" />
+			<xsd:enumeration value="EXIT" />
+			<xsd:enumeration value="SUSPENDED" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ClusterStatus">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OK" />
+			<xsd:enumeration value="UNAVAIL" />
+		</xsd:restriction>
+	</xsd:simpleType>
 </xsd:schema>

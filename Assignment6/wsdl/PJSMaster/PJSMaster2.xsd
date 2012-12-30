@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2.4-b01. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="http://pad.polito.it/PJSInfo">
+
+<xs:simpleType name="JobStatus">
+<xs:restriction base="xs:string">
+<xs:enumeration value="PENDING"/>
+<xs:enumeration value="RUNNING"/>
+<xs:enumeration value="DONE"/>
+<xs:enumeration value="EXIT"/>
+<xs:enumeration value="SUSPENDED"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="HostType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="MASTER"/>
+<xs:enumeration value="SERVER"/>
+<xs:enumeration value="CLIENT"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="HostStatus">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"/>
+<xs:enumeration value="UNAVAIL"/>
+<xs:enumeration value="CLOSED"/>
+<xs:enumeration value="UNLICENSED"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="ClusterStatus">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"/>
+<xs:enumeration value="UNAVAIL"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>

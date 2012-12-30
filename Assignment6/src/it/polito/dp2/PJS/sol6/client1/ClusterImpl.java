@@ -4,9 +4,15 @@ import it.polito.dp2.PJS.Cluster;
 import it.polito.dp2.PJS.Host;
 import it.polito.dp2.PJS.Job;
 import it.polito.dp2.PJS.JobGroup;
-import it.polito.dp2.PJS.sol6.client1.wsimport.GetHostsResponse.Return;
+import it.polito.dp2.PJS.sol6.client1.wsimport.GetHostsResponse;
+import it.polito.dp2.PJS.sol6.client1.wsimport.GetJobGroupsResponse;
+import it.polito.dp2.PJS.sol6.client1.wsimport.GetJobsResponse;
+import it.polito.dp2.PJS.sol6.client1.wsimport.GetMasterHostResponse;
 import it.polito.dp2.PJS.sol6.client1.wsimport.PJSMaster;
+import it.polito.dp2.PJS.sol6.client1.wsimport.PJSMasterService;
 
+import java.net.URI;
+import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -14,9 +20,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.ws.BindingProvider;
+
 class ClusterImpl implements Cluster {
 
-	private PJSMaster port;
+	private URL masterHostWSDL;
+	private URI masterHostURI;
 	
 	private String name;
 	private ClusterStatus status;
@@ -26,42 +35,55 @@ class ClusterImpl implements Cluster {
 	private Set<JobGroup> jobGroups;
 	private Set<Job> jobs;
 	
-	ClusterImpl(PJSMaster port) throws InvalidParameterException {
-		this.port = port;
+	ClusterImpl(URL masterHostWSDL, URI masterHostURI) {
+		this.masterHostWSDL = masterHostWSDL;
+		this.masterHostURI = masterHostURI;
 		
-		this.updateHosts();
-		
-		String name = "ClusterName"; //FIXME
-		if (name != null && !name.equals(""))
-			this.name = name;
-		else
-			throw new InvalidParameterException("Invalid 'name'...");
-
-		this.status = ClusterStatus.UNAVAIL;
-		this.masterHost = null;
-		for (Host host : this.hosts) {
-			if (host.isMaster()) {
-				this.status = ClusterStatus.OK;
-				this.masterHost = host;
-				break;
-			}
-		}
-		
-		if (this.masterHost == null && !this.status.equals(ClusterStatus.UNAVAIL))
-			throw new InvalidParameterException("Invalid 'masterHost'...");
+		this.update();
 	}
 	
-	private void updateHosts() {
+	private void update() {
+		PJSMasterService masterHostService = new PJSMasterService(masterHostWSDL);
+		PJSMaster masterHostPort = masterHostService.getPJSMasterPort();
+		if (masterHostURI != null)
+			((BindingProvider) masterHostPort).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, masterHostURI.toString());
+		
+		this.updateClusterInfo(masterHostPort);
+		this.updateHosts(masterHostPort);
+		this.updateJobGroups(masterHostPort);
+		this.updateJobs(masterHostPort);
+	}
+	
+	private void updateClusterInfo(PJSMaster masterHostPort) {
+		try {
+			this.name = masterHostPort.getClusterName();
+			this.status = ClusterStatus.valueOf(masterHostPort.getClusterStatus().toString());
+			
+			GetMasterHostResponse.Return hostElement = masterHostPort.getMasterHost();
+			String name = hostElement.getName();
+			String type = hostElement.getType().toString();
+			String status = hostElement.getStatus().toString();
+			int physicalMemory = hostElement.getMemory().intValue();
+			int load = hostElement.getLoad().intValue();
+			Host host = new HostImpl(name, type, status, physicalMemory, load);
+
+			this.masterHost = host;
+		} catch (InvalidParameterException e) {
+			System.out.println("Host is not parsable, skipping...");
+		}
+	}
+	
+	private void updateHosts(PJSMaster masterHostPort) {
 		//extract all hosts
 		Set<Host> hosts = new HashSet<Host>();
 		
 		try {
-			if (port != null && port.getHostNames() != null) {
-				List<String> hostNames = port.getHostNames();
+			if (masterHostPort != null && masterHostPort.getHostNames() != null) {
+				List<String> hostNames = masterHostPort.getHostNames();
 				if (!hostNames.isEmpty()) {
-					List<Return> response = port.getHosts(hostNames);
+					List<GetHostsResponse.Return> response = masterHostPort.getHosts(hostNames);
 					if (response != null) {
-						for (Return hostElement : response) {
+						for (GetHostsResponse.Return hostElement : response) {
 							String name = hostElement.getName();
 							String type = hostElement.getType().toString();
 							String status = hostElement.getStatus().toString();
@@ -84,48 +106,66 @@ class ClusterImpl implements Cluster {
 		}
 	}
 	
-	private void updateJobGroups() {
+	private void updateJobGroups(PJSMaster masterHostPort) {
 		//extract all jobGroups
 		Set<JobGroup> jobGroups = new HashSet<JobGroup>();
 		
-//		if (jaxb.getJobGroups() != null) {
-//			List<JobGroup> jobGroupsList = jaxb.getJobGroups().getJobGroup();
-//			for (JobGroup jobGroupElement : jobGroupsList) {
-//				String name = jobGroupElement.getName();
-//				String description = jobGroupElement.getDescription();
-//				
-//				try {
-//					it.polito.dp2.PJS.JobGroup jobGroup = new JobGroupImpl(name, description);
-//					jobGroups.add(jobGroup);
-//				} catch (InvalidParameterException e) {
-//					System.out.println("JobGroup is not parsable, skipping...");
-//				}
-//			}
-//		}
+		try {
+			if (masterHostPort != null) {
+				List<GetJobGroupsResponse.Return> response = masterHostPort.getJobGroups();
+				if (response != null) {
+					for (GetJobGroupsResponse.Return jobGroupElement : response) {
+						String name = jobGroupElement.getName();
+						String description = jobGroupElement.getDescription();
+						
+						try {
+							JobGroup jobGroup = new JobGroupImpl(name, description);
+							jobGroups.add(jobGroup);
+						} catch (InvalidParameterException e) {
+							System.out.println("JobGroup not parsable, skipping...");
+						}
+					}
+				}
+			}
+			this.jobGroups = jobGroups;
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
-	private void updateJobs() {
+	private void updateJobs(PJSMaster masterHostPort) {
 		//extract all jobs
 		Set<Job> jobs = new HashSet<Job>();
 		
-//		if (jaxb.getJobs() != null) {
-//			List<Job> jobsList = jaxb.getJobs().getJob();
-//			for (Job jobElement : jobsList) {
-//				String jobID = jobElement.getJobID();
-//				String state = jobElement.getState();
-//				String submissionHost = jobElement.getSubmissionHost();
-//				long submissionTime = jobElement.getSubmissionTime();
-//				String jobGroup = jobElement.getJobGroup();
-//				String executionHost = jobElement.getExecutionHost();
-//				
-//				it.polito.dp2.PJS.Job job = new JobImpl(jobID, state, submissionHost, submissionTime, jobGroup, executionHost);
-//				jobs.add(job);
-//			}
-//		}
+		try {
+			if (masterHostPort != null) {
+				List<GetJobsResponse.Return> response = masterHostPort.getJobs();
+				if (response != null) {
+					for (GetJobsResponse.Return jobElement : response) {
+						String jobID = jobElement.getJobID();
+						String state = jobElement.getState().toString();
+						String submissionHost = jobElement.getSubmissionHost();
+						long submissionTime = jobElement.getSubmissionTime();
+						String jobGroup = jobElement.getJobGroup();
+						String executionHost = jobElement.getExecutionHost();
+						
+						try {
+							Job job = new JobImpl(jobID, state, submissionHost, submissionTime, jobGroup, executionHost);
+							jobs.add(job);
+						} catch (InvalidParameterException e) {
+							System.out.println("Job not parsable, skipping...");
+						}
+					}
+				}
+			}
+			this.jobs = jobs;
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	private Host getHost(String name) {
-		this.updateHosts();
+		this.update();
 		for (Host host : this.hosts)
 			if (host.getName().equals(name))
 				return host;
@@ -133,7 +173,7 @@ class ClusterImpl implements Cluster {
 	}
 	
 	private JobGroup getJobGroup(String name) {
-		this.updateJobGroups();
+		this.update();
 		for (JobGroup jobGroup : this.jobGroups)
 			if (jobGroup.getName().equals(name))
 				return jobGroup;
@@ -142,7 +182,7 @@ class ClusterImpl implements Cluster {
 	
 	@Override
 	public JobGroup getDefaultJobGroup() {
-		this.updateJobGroups();
+		this.update();
 		for (JobGroup jobGroup : this.jobGroups) {
 			if (jobGroup.getName().equals("default")) {
 				return jobGroup;
@@ -153,19 +193,19 @@ class ClusterImpl implements Cluster {
 
 	@Override
 	public Set<Host> getHosts() {
-		this.updateHosts();
+		this.update();
 		return this.hosts;
 	}
 
 	@Override
 	public Set<JobGroup> getJobGroups() {
-		this.updateJobGroups();
+		this.update();
 		return this.jobGroups;
 	}
 
 	@Override
 	public Set<Job> getJobs(boolean hist) {
-		this.updateJobs();
+		this.update();
 		if (hist) {
 			return this.jobs;
 		} else {
@@ -199,19 +239,19 @@ class ClusterImpl implements Cluster {
 
 	@Override
 	public int getNumberOfHosts() {
-		this.updateHosts();
+		this.update();
 		return hosts.size();
 	}
 
 	@Override
 	public int getNumberOfServers() {
-		this.updateHosts();
+		this.update();
 		return this.getServers().size();
 	}
 
 	@Override
 	public Set<Host> getServers() {
-		this.updateHosts();
+		this.update();
 		Set<Host> servers = new HashSet<Host>();
 		for (Host host : this.hosts)
 			if (host.isServer())

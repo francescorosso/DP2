@@ -19,7 +19,7 @@
 		<mkdir dir="${generated.dir}" />
 		<mkdir dir="${dist.dir}" />
 	</target>
-	
+
 	<target name="clean" depends="init">
 		<delete includeEmptyDirs="true">
 			<fileset dir="${build.dir}" includes="**/*" defaultexcludes="no" />
@@ -27,29 +27,29 @@
 			<fileset dir="${dist.dir}" includes="**/*" defaultexcludes="no" />
 		</delete>
 	</target>
-	
+
 	<target name="generate-artifacts" depends="clean">
-	    <exec executable="xjc">
-	        <arg line="-d ${generated.dir} -p it.polito.dp2.PJS.sol6.server.xjc ${custom.dir}/PJSInfo.xsd" />
-	    </exec>
+		<exec executable="xjc">
+			<arg line="-d ${generated.dir} -p it.polito.dp2.PJS.sol6.server.xjc ${custom.dir}/PJSInfo.xsd" />
+		</exec>
 		<exec executable="wsimport">
-			<arg line="-keep -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport http://localhost:8182/PJSMaster?wsdl" />
+			<arg line="-keep -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport ${basedir}/wsdl/PJSMaster/PJSMaster.wsdl" />
 		</exec>
 	</target>
-	
+
 	<target name="compile-generated" depends="generate-artifacts">
 		<javac srcdir="${generated.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
 			<classpath refid="lib.path.id" />
-		</javac>			
+		</javac>
 	</target>
-	
+
 	<target name="compile-src" depends="clean">
 		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" includeantruntime="false">
 			<classpath refid="lib.path.id" />
 		</javac>
 	</target>
-	
-	<target name="build-jar" depends="compile-generated,compile-src">
+
+	<target name="build-all" depends="compile-generated,compile-src">
 		<jar jarfile="${dist.dir}/MasterHostServer.jar">
 			<fileset dir="${build.dir}" />
 			<fileset dir="${basedir}">
@@ -59,13 +59,20 @@
 				<include name="custom/**/*" />
 			</fileset>
 		</jar>
-		<echo>Built PJSMasterServer.jar...</echo>
+		<echo>Built all...</echo>
 	</target>
-	
-	<target name="build-server" depends="build-jar">
+
+	<target name="build-server" depends="build-all">
 		<java fork="true" classname="it.polito.dp2.PJS.sol6.service.StartMasterHostServer">
 			<classpath refid="lib.path.id" />
 		</java>
 	</target>
 
+	<target name="compile-client-1" depends="build-all">
+		<echo>Built Client1...</echo>
+	</target>
+
+	<target name="compile-client-2" depends="build-all">
+		<echo>Built Client2...</echo>
+	</target>
 </project>
