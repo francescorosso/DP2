@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "PJSMasterService", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", wsdlLocation = "file:/Users/Freddy/workdir/development/DP2/Assignment6/wsdl/PJSMaster/PJSMaster.wsdl")
+@WebServiceClient(name = "PJSMasterService", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", wsdlLocation = "file:/home/francesco/workdir/development/DP2/Assignment6/wsdl/PJSMaster/PJSMaster.wsdl")
 public class PJSMasterService
     extends Service
 {
@@ -30,7 +30,7 @@ public class PJSMasterService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/Users/Freddy/workdir/development/DP2/Assignment6/wsdl/PJSMaster/PJSMaster.wsdl");
+            url = new URL("file:/home/francesco/workdir/development/DP2/Assignment6/wsdl/PJSMaster/PJSMaster.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
