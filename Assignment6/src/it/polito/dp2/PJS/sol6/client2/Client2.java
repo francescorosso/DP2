@@ -32,7 +32,9 @@ public class Client2 implements Submit {
 		}
 		
 		try {
-			return port.submit(host, cmdline, stdin);
+			int jobNumber = port.submit(host, cmdline, stdin);
+			System.out.println("SIZE: " + port.getJobs().size());
+			return jobNumber;
 		} catch (NoFreeExecutionHost_Exception e) {
 			throw new RuntimeException("Unable to submit job: " + e.getMessage() + "...");
 		}

@@ -69,7 +69,7 @@ class ClusterImpl implements Cluster {
 
 			this.masterHost = host;
 		} catch (InvalidParameterException e) {
-			System.out.println("Host is not parsable, skipping...");
+			System.err.println("Host is not parsable, skipping...");
 		}
 	}
 	
@@ -94,7 +94,7 @@ class ClusterImpl implements Cluster {
 								Host host = new HostImpl(name, type, status, physicalMemory, load);
 								hosts.add(host);
 							} catch (InvalidParameterException e) {
-								System.out.println("Host is not parsable, skipping...");
+								System.err.println("Host is not parsable, skipping...");
 							}
 						}
 					}
@@ -122,7 +122,7 @@ class ClusterImpl implements Cluster {
 							JobGroup jobGroup = new JobGroupImpl(name, description);
 							jobGroups.add(jobGroup);
 						} catch (InvalidParameterException e) {
-							System.out.println("JobGroup not parsable, skipping...");
+							System.err.println("JobGroup not parsable, skipping...");
 						}
 					}
 				}
@@ -136,7 +136,6 @@ class ClusterImpl implements Cluster {
 	private void updateJobs(PJSMaster masterHostPort) {
 		//extract all jobs
 		Set<Job> jobs = new HashSet<Job>();
-		
 		try {
 			if (masterHostPort != null) {
 				List<GetJobsResponse.Return> response = masterHostPort.getJobs();
@@ -149,18 +148,21 @@ class ClusterImpl implements Cluster {
 						String jobGroup = jobElement.getJobGroup();
 						String executionHost = jobElement.getExecutionHost();
 						
+						if (!jobID.startsWith("_"))
+							jobID = "_" + jobID;
+						
 						try {
 							Job job = new JobImpl(jobID, state, submissionHost, submissionTime, jobGroup, executionHost);
 							jobs.add(job);
 						} catch (InvalidParameterException e) {
-							System.out.println("Job not parsable, skipping...");
+							System.err.println("Job not parsable, skipping...");
 						}
 					}
 				}
 			}
 			this.jobs = jobs;
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
@@ -372,10 +374,10 @@ class ClusterImpl implements Cluster {
 		
 		private int jobID;
 		private JobState state;
-		private it.polito.dp2.PJS.Host submissionHost;
+		private String submissionHost;
 		private long submissionTime;
-		private it.polito.dp2.PJS.JobGroup jobGroup;
-		private it.polito.dp2.PJS.Host executionHost;
+		private String jobGroup;
+		private String executionHost;
 		
 		JobImpl(String jobID, String state, String submissionHost, long submissionTime, String jobGroup, String executionHost) throws InvalidParameterException {
 			try {
@@ -383,17 +385,17 @@ class ClusterImpl implements Cluster {
 				
 				this.state = JobState.valueOf(state);
 				
-				this.submissionHost = ClusterImpl.this.getHost(submissionHost);
+				this.submissionHost = submissionHost;
 				
 				this.submissionTime = submissionTime;
 				
 				if (jobGroup != null)
-					this.jobGroup = ClusterImpl.this.getJobGroup(jobGroup);
+					this.jobGroup = jobGroup;
 				else
-					this.jobGroup = ClusterImpl.this.getDefaultJobGroup();
+					this.jobGroup = "default";
 				
 				if (executionHost != null)
-					this.executionHost = ClusterImpl.this.getHost(executionHost);
+					this.executionHost = executionHost;
 				else
 					this.executionHost = null;
 			} catch (Exception e) {
@@ -404,7 +406,7 @@ class ClusterImpl implements Cluster {
 
 		@Override
 		public it.polito.dp2.PJS.Host getExecutionHost() {
-			return executionHost;
+			return ClusterImpl.this.getHost(executionHost);
 		}
 
 		@Override
@@ -414,7 +416,7 @@ class ClusterImpl implements Cluster {
 
 		@Override
 		public JobGroup getJobGroup() {
-			return this.jobGroup;
+			return ClusterImpl.this.getJobGroup(jobGroup);
 		}
 
 		@Override
@@ -424,7 +426,7 @@ class ClusterImpl implements Cluster {
 
 		@Override
 		public Host getSubmissionHost() {
-			return this.submissionHost;
+			return ClusterImpl.this.getHost(submissionHost);
 		}
 
 		@Override

@@ -2,7 +2,6 @@ package it.polito.dp2.PJS.sol6.service;
 
 import it.polito.dp2.PJS.lab6.tests.gen.jaxb.Hosts;
 import it.polito.dp2.PJS.lab6.tests.gen.jaxb.THost;
-import it.polito.dp2.PJS.lab6.tests.gen.jaxb.THostType;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts.Host;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.JobGroups.JobGroup;
@@ -75,7 +74,6 @@ public class StartMasterHostServer {
 			e.printStackTrace();
 		}
 		
-
 		Cluster cluster = new Cluster();
 		
 		cluster.setHosts(new ObjectFactory().createClusterHosts());

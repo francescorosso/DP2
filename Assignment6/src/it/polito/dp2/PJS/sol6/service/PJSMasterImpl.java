@@ -7,6 +7,7 @@ import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts.Host;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.JobGroups.JobGroup;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Jobs.Job;
 import it.polito.dp2.PJS.sol6.server.xjc.ClusterStatus;
+import it.polito.dp2.PJS.sol6.server.xjc.JobStatus;
 
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -21,7 +22,6 @@ import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
-import javax.xml.ws.ResponseWrapper;
 
 @WebService(name = "PJSMaster", serviceName = "PJSMasterService", wsdlLocation = "wsdl/PJSMaster/PJSMaster.wsdl")
 public class PJSMasterImpl implements PJSMaster {
@@ -40,13 +40,11 @@ public class PJSMasterImpl implements PJSMaster {
 			if (executionHostURI != null) {
 				try {
 					URL executionHostWSDL = new URL(executionHostURI.toString() + "/PJSDispatchService");
-					URL staticExecutionHostWSDL = Thread.currentThread().getContextClassLoader().getResource("wsdl/PJSDispatch/PJSDispatchService.wsdl");
 					QName executionHostQName = new QName("http://pad.polito.it/PJSDispatch", "PJSDispatchService");
 					
-					PJSDispatchService executionHostService = new PJSDispatchService(staticExecutionHostWSDL, executionHostQName);
+					PJSDispatchService executionHostService = new PJSDispatchService(executionHostWSDL, executionHostQName);
 					
 					PJSDispatch executionHostPort = executionHostService.getPJSDispatchPort();
-//					((BindingProvider) executionHostPort).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, executionHostURI.toString());
 					
 					ports.put(executionHost, executionHostPort);
 				} catch (MalformedURLException e) {
@@ -86,7 +84,6 @@ public class PJSMasterImpl implements PJSMaster {
 	
 	@Override
 	@WebMethod
-	@ResponseWrapper(className = "it.polito.dp2.PJS.sol6.server.xjc.")
 	public Host[] getHosts(String[] hostnames) {
 		return cluster.getHosts().getHost().toArray(new Host[0]);
 	}
@@ -108,6 +105,7 @@ public class PJSMasterImpl implements PJSMaster {
 	@Override
 	@WebMethod
 	public int submit(String submissionHost, String cmd, String stdin) throws NoFreeExecutionHost {
+		System.out.println("Submitting\nSubmission host: " + submissionHost + "\nCommand: " + cmd + "\nStdIn: " + stdin);
 		for (Host executionHost : cluster.getHosts().getHost()) {
 			PJSDispatch executionHostPort = ports.get(executionHost);
 			
@@ -120,6 +118,7 @@ public class PJSMasterImpl implements PJSMaster {
 				//FIXME
 				Job dispatchedJob = new Job();
 				dispatchedJob.setJobID("" + jobsCounter);
+				dispatchedJob.setState(JobStatus.RUNNING);
 				dispatchedJob.setExecutionHost(executionHost.getName());
 				dispatchedJob.setSubmissionHost(submissionHost);
 				dispatchedJob.setSubmissionTime(System.currentTimeMillis());
@@ -128,11 +127,12 @@ public class PJSMasterImpl implements PJSMaster {
 				jobsCounter++;
 				return (jobsCounter - 1);
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println(executionHost.getName() + " is busy... Trying with other hosts...");
 			}
 		}
-		//throw new NoFreeExecutionHost("Unable to find a suitable executionHost...");
-		return 1;
+		System.err.println("No hosts available...");
+//		throw new NoFreeExecutionHost("Unable to find a suitable executionHost...");
+		return -1;
 	}
 
 	@Override

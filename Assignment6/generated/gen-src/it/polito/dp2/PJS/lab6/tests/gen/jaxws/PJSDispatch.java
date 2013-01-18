@@ -37,8 +37,8 @@ public interface PJSDispatch {
      * @param callbackAddr
      * @param cmdline
      * @throws ServiceUnavailable_Exception
-     * @throws AlreadyDispatchedJob_Exception
      * @throws TooManyJobs_Exception
+     * @throws AlreadyDispatchedJob_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "dispatch", targetNamespace = "http://pad.polito.it/PJS", className = "it.polito.dp2.PJS.lab6.tests.gen.jaxws.Dispatch")
@@ -62,8 +62,8 @@ public interface PJSDispatch {
      *       
      * 
      * @param jobId
-     * @throws UnknownJob_Exception
      * @throws ServiceUnavailable_Exception
+     * @throws UnknownJob_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "resume", targetNamespace = "http://pad.polito.it/PJS", className = "it.polito.dp2.PJS.lab6.tests.gen.jaxws.Resume")
@@ -80,8 +80,8 @@ public interface PJSDispatch {
      * 	  
      * 
      * @param jobId
-     * @throws UnknownJob_Exception
      * @throws ServiceUnavailable_Exception
+     * @throws UnknownJob_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "suspend", targetNamespace = "http://pad.polito.it/PJS", className = "it.polito.dp2.PJS.lab6.tests.gen.jaxws.Suspend")
@@ -98,8 +98,8 @@ public interface PJSDispatch {
      *       
      * 
      * @param jobId
-     * @throws UnknownJob_Exception
      * @throws ServiceUnavailable_Exception
+     * @throws UnknownJob_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "kill", targetNamespace = "http://pad.polito.it/PJS", className = "it.polito.dp2.PJS.lab6.tests.gen.jaxws.Kill")
