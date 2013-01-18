@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 import it.polito.dp2.PJS.lab6.Submit;
@@ -20,7 +21,8 @@ public class Client2 implements Submit {
 		
 		URL masterHostWSDL = Thread.currentThread().getContextClassLoader().getResource("PJSMaster/PJSMaster.wsdl");
 		
-		PJSMasterService service = new PJSMasterService(masterHostWSDL);
+		QName qname = new QName("http://service.sol6.PJS.dp2.polito.it/", "PJSMasterService"); 
+		PJSMasterService service = new PJSMasterService(masterHostWSDL, qname);
 		PJSMaster port = service.getPJSMasterPort();
 		if (masterHostURL != null) {
 			try {

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 class ClusterImpl implements Cluster {
@@ -43,7 +44,8 @@ class ClusterImpl implements Cluster {
 	}
 	
 	private void update() {
-		PJSMasterService masterHostService = new PJSMasterService(masterHostWSDL);
+		QName qname = new QName("http://service.sol6.PJS.dp2.polito.it/", "PJSMasterService");
+		PJSMasterService masterHostService = new PJSMasterService(masterHostWSDL, qname);
 		PJSMaster masterHostPort = masterHostService.getPJSMasterPort();
 		if (masterHostURI != null)
 			((BindingProvider) masterHostPort).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, masterHostURI.toString());

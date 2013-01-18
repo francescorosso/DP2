@@ -33,7 +33,7 @@
 			<arg line="-d ${generated.dir} -p it.polito.dp2.PJS.sol6.server.xjc ${custom.dir}/PJSInfo.xsd" />
 		</exec>
 		<exec executable="wsimport">
-			<arg line="-keep -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport ${basedir}/wsdl/PJSMaster/PJSMaster.wsdl" />
+			<arg line="-keep -target 2.0 -d ${generated.dir} -p it.polito.dp2.PJS.sol6.client1.wsimport ${basedir}/wsdl/PJSMaster/PJSMaster.wsdl" />
 		</exec>
 	</target>
 
