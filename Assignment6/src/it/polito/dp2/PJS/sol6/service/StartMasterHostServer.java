@@ -1,8 +1,8 @@
 package it.polito.dp2.PJS.sol6.service;
 
-import it.polito.dp2.PJS.lab6.PJSDispatchImpl;
 import it.polito.dp2.PJS.lab6.tests.gen.jaxb.Hosts;
 import it.polito.dp2.PJS.lab6.tests.gen.jaxb.THost;
+import it.polito.dp2.PJS.lab6.tests.gen.jaxb.THostType;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts.Host;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.JobGroups.JobGroup;
@@ -34,8 +34,34 @@ public class StartMasterHostServer {
 			for (THost host : hosts.getHost()) {
 				Host executionHost = new Host();
 				executionHost.setName(host.getName());
-				executionHost.setType(HostType.fromValue(host.getType().toString()));
-				executionHost.setStatus(HostStatus.fromValue(host.getStatus().toString()));
+				switch (host.getType()) {
+				case MASTER:
+					executionHost.setType(HostType.MASTER);
+					break;
+				case SERVER:
+					executionHost.setType(HostType.SERVER);
+					break;
+				case CLIENT:
+				default:
+					executionHost.setType(HostType.CLIENT);
+					break;
+				}
+				
+				switch (host.getStatus()) {
+				case OK:
+				default:
+					executionHost.setStatus(HostStatus.OK);
+					break;
+				case CLOSED:
+					executionHost.setStatus(HostStatus.CLOSED);
+					break;
+				case UNAVAIL:
+					executionHost.setStatus(HostStatus.UNAVAIL);
+					break;
+				case UNLICENSED:
+					executionHost.setStatus(HostStatus.UNLICENSED);
+					break;
+				}
 				executionHost.setLoad(host.getLoad().intValue());
 				executionHost.setMemory(host.getMemory().intValue());
 				
@@ -73,8 +99,8 @@ public class StartMasterHostServer {
 			}
 		}
 		
-		new ServicePublisher("http://localhost:8085/", new PJSDispatchImpl()).start();
-		new ServicePublisher("http://localhost:8086/", new PJSDispatchImpl()).start();
+//		new ServicePublisher("http://localhost:8085/", new PJSDispatchImpl()).start();
+//		new ServicePublisher("http://localhost:8086/", new PJSDispatchImpl()).start();
 		
 		try {
 			Thread.sleep(1000);

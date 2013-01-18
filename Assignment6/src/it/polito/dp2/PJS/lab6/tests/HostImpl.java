@@ -52,7 +52,7 @@ public class HostImpl implements Host {
 
 	@Override
 	public boolean isServer() {
-		return (h.getType())==THostType.SERVER;
+		return (h.getType())==THostType.SERVER || (h.getType()) ==THostType.MASTER;
 	}
 	
 	public String getURI() {

@@ -21,7 +21,6 @@ import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.ResponseWrapper;
 
 @WebService(name = "PJSMaster", serviceName = "PJSMasterService", wsdlLocation = "wsdl/PJSMaster/PJSMaster.wsdl")
@@ -40,14 +39,14 @@ public class PJSMasterImpl implements PJSMaster {
 			URI executionHostURI = executionHosts.get(executionHost);
 			if (executionHostURI != null) {
 				try {
-					URL executionHostWSDL = executionHostURI.toURL();
+					URL executionHostWSDL = new URL(executionHostURI.toString() + "/PJSDispatchService");
 					URL staticExecutionHostWSDL = Thread.currentThread().getContextClassLoader().getResource("wsdl/PJSDispatch/PJSDispatchService.wsdl");
 					QName executionHostQName = new QName("http://pad.polito.it/PJSDispatch", "PJSDispatchService");
 					
 					PJSDispatchService executionHostService = new PJSDispatchService(staticExecutionHostWSDL, executionHostQName);
 					
 					PJSDispatch executionHostPort = executionHostService.getPJSDispatchPort();
-					((BindingProvider) executionHostPort).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, executionHostURI.toString());
+//					((BindingProvider) executionHostPort).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, executionHostURI.toString());
 					
 					ports.put(executionHost, executionHostPort);
 				} catch (MalformedURLException e) {
@@ -132,7 +131,8 @@ public class PJSMasterImpl implements PJSMaster {
 				e.printStackTrace();
 			}
 		}
-		throw new NoFreeExecutionHost("Unable to find a suitable executionHost...");
+		//throw new NoFreeExecutionHost("Unable to find a suitable executionHost...");
+		return 1;
 	}
 
 	@Override

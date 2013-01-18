@@ -67,6 +67,9 @@
 			<classpath refid="lib.path.id" />
 		</java>
 	</target>
+	
+	<target name="run-server" depends="build-server">
+	</target>
 
 	<target name="compile-client-1" depends="build-all">
 		<echo>Built Client1...</echo>

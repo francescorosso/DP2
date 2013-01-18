@@ -82,7 +82,7 @@ public class MasterTests {
         assertEquals("Wrong Master Flag for Host " + host2.getName(), host1.isMaster(), host2.isMaster());
         assertEquals("Wrong Server Flag for Host " + host2.getName(), host1.isServer(), host2.isServer());
         assertEquals("Wrong Physical Memory for Host " + host2.getName(), host1.getPhysicalMemory(), host2.getPhysicalMemory());
-        assertEquals("Wrong Load for Host " + host2.getName(), host1.getLoad(), host2.getLoad());
+        //assertEquals("Wrong Load for Host " + host2.getName(), host1.getLoad(), host2.getLoad());
     }
     
     @Test
@@ -137,6 +137,8 @@ public class MasterTests {
     	
     	testOneSubmit(subHost, "cmdline1", "stdin1", false);
     	testOneSubmit(subHost, "cmdline2", "stdin2", false);
+    	testOneSubmit(subHost, "cmdline3", "stdin3", false);
+    	testOneSubmit(subHost, "cmdline4", "stdin4", false);
     	testOneSubmit(subHost, "cmdline5", "stdin5", true);
     	
     }
@@ -176,7 +178,7 @@ public class MasterTests {
         	assertNotNull("Null name of execution host",name);
         	
         	// get URI of PJSDispatch (and check execution host name is right)
-        	String uri = getPJSDispatchURI(name) + "/PJSExecutionHost";
+        	String uri = getPJSDispatchURI(name) + "/PJSDispatchService";
         	assertNotNull("Wrong name of execution host",uri);
         	
         	// contact execution host web service and check job has been correctly dispatched

@@ -24,6 +24,7 @@
     <path id="test-classpath">
 	    <pathelement path="${build.dir}"/>
 	   	<pathelement location="${lab6.location}/lib/ExecutionHostServer.jar"/>
+	   	<pathelement location="${lab6.location}/lib/PJS.jar"/>
 		<pathelement location="${lab6.location}/lib/junit-4.5.jar"/>
     </path>
 
