@@ -29,9 +29,10 @@ public class ObjectFactory {
     private final static QName _GetJobs_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getJobs");
     private final static QName _GetClusterStatus_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getClusterStatus");
     private final static QName _GetMasterHost_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getMasterHost");
+    private final static QName _EndJob_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "endJob");
     private final static QName _GetJobGroupsResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getJobGroupsResponse");
-    private final static QName _GetHostNamesResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getHostNamesResponse");
     private final static QName _GetClusterNameResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getClusterNameResponse");
+    private final static QName _GetHostNamesResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getHostNamesResponse");
     private final static QName _GetHostNames_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getHostNames");
     private final static QName _GetHostsResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getHostsResponse");
     private final static QName _SubmitResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "submitResponse");
@@ -43,7 +44,6 @@ public class ObjectFactory {
     private final static QName _ResumeJob_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "resumeJob");
     private final static QName _SuspendJob_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "suspendJob");
     private final static QName _GetHosts_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getHosts");
-    private final static QName _NoFreeExecutionHost_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "NoFreeExecutionHost");
     private final static QName _Submit_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "submit");
     private final static QName _SuspendJobGroup_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "suspendJobGroup");
     private final static QName _GetClusterStatusResponse_QNAME = new QName("http://service.sol6.PJS.dp2.polito.it/", "getClusterStatusResponse");
@@ -53,38 +53,6 @@ public class ObjectFactory {
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link Cluster }
-     * 
-     */
-    public Cluster createCluster() {
-        return new Cluster();
-    }
-
-    /**
-     * Create an instance of {@link Cluster.Jobs }
-     * 
-     */
-    public Cluster.Jobs createClusterJobs() {
-        return new Cluster.Jobs();
-    }
-
-    /**
-     * Create an instance of {@link Cluster.JobGroups }
-     * 
-     */
-    public Cluster.JobGroups createClusterJobGroups() {
-        return new Cluster.JobGroups();
-    }
-
-    /**
-     * Create an instance of {@link Cluster.Hosts }
-     * 
-     */
-    public Cluster.Hosts createClusterHosts() {
-        return new Cluster.Hosts();
     }
 
     /**
@@ -141,14 +109,6 @@ public class ObjectFactory {
      */
     public Submit createSubmit() {
         return new Submit();
-    }
-
-    /**
-     * Create an instance of {@link NoFreeExecutionHost }
-     * 
-     */
-    public NoFreeExecutionHost createNoFreeExecutionHost() {
-        return new NoFreeExecutionHost();
     }
 
     /**
@@ -216,6 +176,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link EndJob }
+     * 
+     */
+    public EndJob createEndJob() {
+        return new EndJob();
+    }
+
+    /**
      * Create an instance of {@link GetMasterHost }
      * 
      */
@@ -269,30 +237,6 @@ public class ObjectFactory {
      */
     public KillJob createKillJob() {
         return new KillJob();
-    }
-
-    /**
-     * Create an instance of {@link Cluster.Jobs.Job }
-     * 
-     */
-    public Cluster.Jobs.Job createClusterJobsJob() {
-        return new Cluster.Jobs.Job();
-    }
-
-    /**
-     * Create an instance of {@link Cluster.JobGroups.JobGroup }
-     * 
-     */
-    public Cluster.JobGroups.JobGroup createClusterJobGroupsJobGroup() {
-        return new Cluster.JobGroups.JobGroup();
-    }
-
-    /**
-     * Create an instance of {@link Cluster.Hosts.Host }
-     * 
-     */
-    public Cluster.Hosts.Host createClusterHostsHost() {
-        return new Cluster.Hosts.Host();
     }
 
     /**
@@ -373,6 +317,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link EndJob }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.sol6.PJS.dp2.polito.it/", name = "endJob")
+    public JAXBElement<EndJob> createEndJob(EndJob value) {
+        return new JAXBElement<EndJob>(_EndJob_QNAME, EndJob.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetJobGroupsResponse }{@code >}}
      * 
      */
@@ -382,21 +335,21 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link GetHostNamesResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://service.sol6.PJS.dp2.polito.it/", name = "getHostNamesResponse")
-    public JAXBElement<GetHostNamesResponse> createGetHostNamesResponse(GetHostNamesResponse value) {
-        return new JAXBElement<GetHostNamesResponse>(_GetHostNamesResponse_QNAME, GetHostNamesResponse.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetClusterNameResponse }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://service.sol6.PJS.dp2.polito.it/", name = "getClusterNameResponse")
     public JAXBElement<GetClusterNameResponse> createGetClusterNameResponse(GetClusterNameResponse value) {
         return new JAXBElement<GetClusterNameResponse>(_GetClusterNameResponse_QNAME, GetClusterNameResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetHostNamesResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.sol6.PJS.dp2.polito.it/", name = "getHostNamesResponse")
+    public JAXBElement<GetHostNamesResponse> createGetHostNamesResponse(GetHostNamesResponse value) {
+        return new JAXBElement<GetHostNamesResponse>(_GetHostNamesResponse_QNAME, GetHostNamesResponse.class, null, value);
     }
 
     /**
@@ -496,15 +449,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://service.sol6.PJS.dp2.polito.it/", name = "getHosts")
     public JAXBElement<GetHosts> createGetHosts(GetHosts value) {
         return new JAXBElement<GetHosts>(_GetHosts_QNAME, GetHosts.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link NoFreeExecutionHost }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://service.sol6.PJS.dp2.polito.it/", name = "NoFreeExecutionHost")
-    public JAXBElement<NoFreeExecutionHost> createNoFreeExecutionHost(NoFreeExecutionHost value) {
-        return new JAXBElement<NoFreeExecutionHost>(_NoFreeExecutionHost_QNAME, NoFreeExecutionHost.class, null, value);
     }
 
     /**

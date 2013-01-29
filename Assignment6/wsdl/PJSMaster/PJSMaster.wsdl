@@ -6,14 +6,15 @@
 	xmlns:tns="http://service.sol6.PJS.dp2.polito.it/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://service.sol6.PJS.dp2.polito.it/"
 	name="PJSMasterService">
+	<documentation>PoliTo - DP2_2012 - PJSMaster WSDL v1.1</documentation>
 	<types>
 		<xs:schema xmlns:tns="http://service.sol6.PJS.dp2.polito.it/"
 			xmlns:ns1="http://pad.polito.it/PJSInfo" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 			version="1.0" targetNamespace="http://service.sol6.PJS.dp2.polito.it/">
 
-			<xs:import namespace="http://pad.polito.it/PJSInfo" schemaLocation="../../custom/PJSInfo.xsd" />
+			<xs:import namespace="http://pad.polito.it/PJSInfo" />
 
-			<xs:element name="NoFreeExecutionHost" type="tns:NoFreeExecutionHost" />
+			<xs:element name="endJob" type="tns:endJob" />
 
 			<xs:element name="getClusterName" type="tns:getClusterName" />
 
@@ -163,6 +164,14 @@
 				</xs:sequence>
 			</xs:complexType>
 
+			<xs:complexType name="endJob">
+				<xs:sequence>
+					<xs:element name="arg0" type="xs:integer" minOccurs="0" />
+					<xs:element name="arg1" type="xs:int" />
+					<xs:element name="arg2" type="xs:string" minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+
 			<xs:complexType name="suspendJobGroup">
 				<xs:sequence>
 					<xs:element name="arg0" type="xs:int" />
@@ -224,95 +233,151 @@
 					<xs:element name="return" type="xs:int" />
 				</xs:sequence>
 			</xs:complexType>
+		</xs:schema>
 
-			<xs:complexType name="NoFreeExecutionHost">
-				<xs:sequence>
-					<xs:element name="message" type="xs:string" minOccurs="0" />
-				</xs:sequence>
-			</xs:complexType>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="qualified" version="1.0" targetNamespace="http://pad.polito.it/PJSInfo">
+
+			<xs:simpleType name="JobStatus">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="PENDING" />
+					<xs:enumeration value="RUNNING" />
+					<xs:enumeration value="DONE" />
+					<xs:enumeration value="EXIT" />
+					<xs:enumeration value="SUSPENDED" />
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="HostType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="MASTER" />
+					<xs:enumeration value="SERVER" />
+					<xs:enumeration value="CLIENT" />
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="HostStatus">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="OK" />
+					<xs:enumeration value="UNAVAIL" />
+					<xs:enumeration value="CLOSED" />
+					<xs:enumeration value="UNLICENSED" />
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:simpleType name="ClusterStatus">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="OK" />
+					<xs:enumeration value="UNAVAIL" />
+				</xs:restriction>
+			</xs:simpleType>
 		</xs:schema>
 	</types>
-	<message name="submit">
-		<part name="parameters" element="tns:submit" />
-	</message>
-	<message name="submitResponse">
-		<part name="parameters" element="tns:submitResponse" />
-	</message>
-	<message name="NoFreeExecutionHost">
-		<part name="fault" element="tns:NoFreeExecutionHost" />
-	</message>
+
 	<message name="getHosts">
+		<documentation>Returns all available hosts (request)</documentation>
 		<part name="parameters" element="tns:getHosts" />
 	</message>
 	<message name="getHostsResponse">
+		<documentation>Returns all available hosts (response)</documentation>
 		<part name="parameters" element="tns:getHostsResponse" />
 	</message>
 	<message name="getJobGroups">
+		<documentation>Returns all available jobGroups (request)
+		</documentation>
 		<part name="parameters" element="tns:getJobGroups" />
 	</message>
 	<message name="getJobGroupsResponse">
+		<documentation>Returns all available jobGroups (response)
+		</documentation>
 		<part name="parameters" element="tns:getJobGroupsResponse" />
 	</message>
 	<message name="getJobs">
+		<documentation>Returns all available jobs (request)</documentation>
 		<part name="parameters" element="tns:getJobs" />
 	</message>
 	<message name="getJobsResponse">
+		<documentation>Returns all available jobs (response)</documentation>
 		<part name="parameters" element="tns:getJobsResponse" />
 	</message>
 	<message name="getMasterHost">
+		<documentation>Returns the master host (request)</documentation>
 		<part name="parameters" element="tns:getMasterHost" />
 	</message>
 	<message name="getMasterHostResponse">
+		<documentation>Returns the master host (response)</documentation>
 		<part name="parameters" element="tns:getMasterHostResponse" />
 	</message>
 	<message name="getClusterName">
+		<documentation>Returns the cluster name (request)</documentation>
 		<part name="parameters" element="tns:getClusterName" />
 	</message>
 	<message name="getClusterNameResponse">
+		<documentation>Returns the cluster name (response)</documentation>
 		<part name="parameters" element="tns:getClusterNameResponse" />
 	</message>
 	<message name="getClusterStatus">
+		<documentation>Returns the cluster status (request)</documentation>
 		<part name="parameters" element="tns:getClusterStatus" />
 	</message>
 	<message name="getClusterStatusResponse">
+		<documentation>Returns the cluster status (response)</documentation>
 		<part name="parameters" element="tns:getClusterStatusResponse" />
 	</message>
 	<message name="getHostNames">
+		<documentation>Returns names of all available hosts (request)
+		</documentation>
 		<part name="parameters" element="tns:getHostNames" />
 	</message>
 	<message name="getHostNamesResponse">
+		<documentation>Returns names of all available hosts (response)
+		</documentation>
 		<part name="parameters" element="tns:getHostNamesResponse" />
 	</message>
+	<message name="submit">
+		<documentation>Submit a new job (request) - @Arg cmd @Arg stdin.
+		</documentation>
+		<part name="parameters" element="tns:submit" />
+	</message>
+	<message name="submitResponse">
+		<documentation>Submit a new job (response) - @Return An integer
+			representing the jobID. Return -1 if not submitted.
+		</documentation>
+		<part name="parameters" element="tns:submitResponse" />
+	</message>
+	<message name="endJob">
+		<documentation>Callback operation: PJSDispatch service should call it
+			when job execution terminates
+		</documentation>
+		<part name="parameters" element="tns:endJob" />
+	</message>
 	<message name="suspendJob">
+		<documentation>Suspend a single job</documentation>
 		<part name="parameters" element="tns:suspendJob" />
 	</message>
 	<message name="resumeJob">
+		<documentation>Resume a single job</documentation>
 		<part name="parameters" element="tns:resumeJob" />
 	</message>
 	<message name="killJob">
+		<documentation>Kill a single job</documentation>
 		<part name="parameters" element="tns:killJob" />
 	</message>
 	<message name="suspendJobGroup">
+		<documentation>Suspend an entire jobGroup</documentation>
 		<part name="parameters" element="tns:suspendJobGroup" />
 	</message>
 	<message name="resumeJobGroup">
+		<documentation>Resume an entire jobGroup</documentation>
 		<part name="parameters" element="tns:resumeJobGroup" />
 	</message>
 	<message name="killJobGroup">
+		<documentation>Kill an entire jobGroup</documentation>
 		<part name="parameters" element="tns:killJobGroup" />
 	</message>
 	<portType name="PJSMaster">
-		<operation name="submit">
-			<input
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitRequest"
-				message="tns:submit" />
-			<output
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitResponse"
-				message="tns:submitResponse" />
-			<fault message="tns:NoFreeExecutionHost" name="NoFreeExecutionHost"
-				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submit/Fault/NoFreeExecutionHost" />
-		</operation>
 		<operation name="getHosts">
+			<documentation>Returns all available hosts</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostsRequest"
 				message="tns:getHosts" />
@@ -321,6 +386,7 @@
 				message="tns:getHostsResponse" />
 		</operation>
 		<operation name="getJobGroups">
+			<documentation>Returns all available jobGroups</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getJobGroupsRequest"
 				message="tns:getJobGroups" />
@@ -329,6 +395,7 @@
 				message="tns:getJobGroupsResponse" />
 		</operation>
 		<operation name="getJobs">
+			<documentation>Returns all available jobs</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getJobsRequest"
 				message="tns:getJobs" />
@@ -337,6 +404,7 @@
 				message="tns:getJobsResponse" />
 		</operation>
 		<operation name="getMasterHost">
+			<documentation>Returns the master host</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getMasterHostRequest"
 				message="tns:getMasterHost" />
@@ -345,6 +413,7 @@
 				message="tns:getMasterHostResponse" />
 		</operation>
 		<operation name="getClusterName">
+			<documentation>Returns the cluster name</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getClusterNameRequest"
 				message="tns:getClusterName" />
@@ -353,6 +422,7 @@
 				message="tns:getClusterNameResponse" />
 		</operation>
 		<operation name="getClusterStatus">
+			<documentation>Returns the cluster status</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getClusterStatusRequest"
 				message="tns:getClusterStatus" />
@@ -361,6 +431,7 @@
 				message="tns:getClusterStatusResponse" />
 		</operation>
 		<operation name="getHostNames">
+			<documentation>Returns names of all available hosts</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostNamesRequest"
 				message="tns:getHostNames" />
@@ -368,48 +439,58 @@
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/getHostNamesResponse"
 				message="tns:getHostNamesResponse" />
 		</operation>
+		<operation name="submit">
+			<documentation>Submit a new job</documentation>
+			<input
+				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitRequest"
+				message="tns:submit" />
+			<output
+				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/submitResponse"
+				message="tns:submitResponse" />
+		</operation>
+		<operation name="endJob">
+			<documentation>Callback function: PJSDispatch declares a job
+				terminated</documentation>
+			<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/endJob"
+				message="tns:endJob" />
+		</operation>
 		<operation name="suspendJob">
+			<documentation>Suspend a job</documentation>
 			<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/suspendJob"
 				message="tns:suspendJob" />
 		</operation>
 		<operation name="resumeJob">
+			<documentation>Resume a job</documentation>
 			<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/resumeJob"
 				message="tns:resumeJob" />
 		</operation>
 		<operation name="killJob">
+			<documentation>Kill a job</documentation>
 			<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/killJob"
 				message="tns:killJob" />
 		</operation>
 		<operation name="suspendJobGroup">
+			<documentation>Suspend an entire jobGroup</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/suspendJobGroup"
 				message="tns:suspendJobGroup" />
 		</operation>
 		<operation name="resumeJobGroup">
+			<documentation>Resume an entire jobGroup</documentation>
 			<input
 				wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/resumeJobGroup"
 				message="tns:resumeJobGroup" />
 		</operation>
 		<operation name="killJobGroup">
+			<documentation>Kill an entire jobGroup</documentation>
 			<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/killJobGroup"
 				message="tns:killJobGroup" />
 		</operation>
 	</portType>
 	<binding name="PJSMasterPortBinding" type="tns:PJSMaster">
+		<documentation>Port Bindings... All literal (useless do it encoded, this is a demonstrative web service)</documentation>
 		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
 			style="document" />
-		<operation name="submit">
-			<soap:operation soapAction="" />
-			<input>
-				<soap:body use="literal" />
-			</input>
-			<output>
-				<soap:body use="literal" />
-			</output>
-			<fault name="NoFreeExecutionHost">
-				<soap:fault name="NoFreeExecutionHost" use="literal" />
-			</fault>
-		</operation>
 		<operation name="getHosts">
 			<soap:operation soapAction="" />
 			<input>
@@ -472,6 +553,21 @@
 			<output>
 				<soap:body use="literal" />
 			</output>
+		</operation>
+		<operation name="submit">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="endJob">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
 		</operation>
 		<operation name="suspendJob">
 			<soap:operation soapAction="" />
@@ -511,6 +607,7 @@
 		</operation>
 	</binding>
 	<service name="PJSMasterService">
+		<documentation>Service ports (in our case only one...)</documentation>
 		<port name="PJSMasterPort" binding="tns:PJSMasterPortBinding">
 			<soap:address location="http://localhost:8182/PJSMaster" />
 		</port>

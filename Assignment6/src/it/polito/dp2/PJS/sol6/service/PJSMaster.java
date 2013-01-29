@@ -1,5 +1,7 @@
 package it.polito.dp2.PJS.sol6.service;
 
+import java.math.BigInteger;
+
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Hosts.Host;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.JobGroups.JobGroup;
 import it.polito.dp2.PJS.sol6.server.xjc.Cluster.Jobs.Job;
@@ -34,7 +36,11 @@ public interface PJSMaster {
 	public Job[] getJobs();
 	
 	@WebMethod
-	public int submit(String submissionHost, String cmd, String stdin) throws NoFreeExecutionHost;
+	public int submit(String submissionHost, String cmd, String stdin);
+	
+	@WebMethod
+	@Oneway
+	public void endJob(BigInteger jobID, int exitCode, String stdOut);
 
 	@WebMethod
 	@Oneway

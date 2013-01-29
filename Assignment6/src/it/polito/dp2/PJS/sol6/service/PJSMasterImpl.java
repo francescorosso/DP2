@@ -14,7 +14,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +30,16 @@ import javax.xml.namespace.QName;
 public class PJSMasterImpl implements PJSMaster {
 
 	private Cluster cluster;
-	private Map<Host, PJSDispatch> ports = new HashMap<Host, PJSDispatch>();
+	private List<Host> hosts = Collections.synchronizedList(new LinkedList<Host>());
+	private Map<Host, PJSDispatch> ports = Collections.synchronizedMap(new HashMap<Host, PJSDispatch>());
 
 	private int jobsCounter = 1;
 	
 	public PJSMasterImpl(Cluster cluster, Map<Host, URI> executionHosts) {
 		this.cluster = cluster;
+
+		// build hosts set
+		hosts.addAll(cluster.getHosts().getHost());
 		
 		// build ports map
 		for (Host executionHost : cluster.getHosts().getHost()) {
@@ -104,35 +111,59 @@ public class PJSMasterImpl implements PJSMaster {
 	
 	@Override
 	@WebMethod
-	public int submit(String submissionHost, String cmd, String stdin) throws NoFreeExecutionHost {
+	public synchronized int submit(String submissionHost, String cmd, String stdin) {
 		System.out.println("Submitting\nSubmission host: " + submissionHost + "\nCommand: " + cmd + "\nStdIn: " + stdin);
-		for (Host executionHost : cluster.getHosts().getHost()) {
-			PJSDispatch executionHostPort = ports.get(executionHost);
-			
-			try {
-				BigInteger jobsBigCounter = new BigInteger("" + jobsCounter);
-				String callbackURI = "http://localhost:8182/PJSMaster";
-				executionHostPort.dispatch(jobsBigCounter, cmd, stdin, callbackURI);
-				
-				// job dispatched
-				//FIXME
-				Job dispatchedJob = new Job();
-				dispatchedJob.setJobID("" + jobsCounter);
-				dispatchedJob.setState(JobStatus.RUNNING);
-				dispatchedJob.setExecutionHost(executionHost.getName());
-				dispatchedJob.setSubmissionHost(submissionHost);
-				dispatchedJob.setSubmissionTime(System.currentTimeMillis());
-				cluster.getJobs().getJob().add(dispatchedJob);
-				
-				jobsCounter++;
-				return (jobsCounter - 1);
-			} catch (Exception e) {
-				System.err.println(executionHost.getName() + " is busy... Trying with other hosts...");
+		
+		// sort hosts
+		Collections.sort(hosts, new Comparator<Host>() {
+
+			@Override
+			public int compare(Host o1, Host o2) {
+				return o1.getLoad() - o2.getLoad();
+			}
+		});
+		
+		for (Host executionHost : hosts) {
+			System.out.println("Trying with execution host " + executionHost.getName() + " (" + executionHost.getLoad() + ")...");
+			switch (executionHost.getStatus()) {
+			case OK:
+				PJSDispatch executionHostPort = ports.get(executionHost);
+				try {
+					BigInteger jobsBigCounter = new BigInteger("" + jobsCounter);
+					//FIXME: implement callback function
+					String callbackURI = "http://localhost:8182/PJSMaster";
+					executionHostPort.dispatch(jobsBigCounter, cmd, stdin, callbackURI);
+					
+					// job dispatched
+					// add load on host
+					executionHost.setLoad(executionHost.getLoad() + 1);
+					
+					// add new job in cluster
+					Job dispatchedJob = new Job();
+					dispatchedJob.setJobID("" + jobsCounter);
+					dispatchedJob.setState(JobStatus.RUNNING);
+					dispatchedJob.setExecutionHost(executionHost.getName());
+					dispatchedJob.setSubmissionHost(submissionHost);
+					dispatchedJob.setSubmissionTime(System.currentTimeMillis());
+					cluster.getJobs().getJob().add(dispatchedJob);
+					
+					jobsCounter++;
+					return (jobsCounter - 1);
+				} catch (Exception e) {
+					System.err.println(executionHost.getName() + " is busy... Trying with other hosts...");
+				}
+				break;
 			}
 		}
 		System.err.println("No hosts available...");
-//		throw new NoFreeExecutionHost("Unable to find a suitable executionHost...");
 		return -1;
+	}
+	
+	@Override
+	@WebMethod
+	@Oneway
+	public void endJob(BigInteger jobID, int exitCode, String stdOut) {
+		//TODO
 	}
 
 	@Override

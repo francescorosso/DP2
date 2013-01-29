@@ -36,9 +36,9 @@ public interface PJSDispatch {
      * @param jobId
      * @param callbackAddr
      * @param cmdline
-     * @throws ServiceUnavailable_Exception
      * @throws TooManyJobs_Exception
      * @throws AlreadyDispatchedJob_Exception
+     * @throws ServiceUnavailable_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "dispatch", targetNamespace = "http://pad.polito.it/PJS", className = "it.polito.dp2.PJS.lab6.tests.gen.jaxws.Dispatch")

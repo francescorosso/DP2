@@ -1,6 +1,7 @@
 
 package it.polito.dp2.PJS.sol6.client1.wsimport;
 
+import java.math.BigInteger;
 import java.util.List;
 import javax.jws.Oneway;
 import javax.jws.WebMethod;
@@ -22,29 +23,7 @@ public interface PJSMaster {
 
 
     /**
-     * 
-     * @param arg2
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns int
-     * @throws NoFreeExecutionHost_Exception
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "submit", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.Submit")
-    @ResponseWrapper(localName = "submitResponse", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.SubmitResponse")
-    public int submit(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        String arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        String arg2)
-        throws NoFreeExecutionHost_Exception
-    ;
-
-    /**
+     * Returns all available hosts
      * 
      * @param arg0
      * @return
@@ -59,6 +38,7 @@ public interface PJSMaster {
         List<String> arg0);
 
     /**
+     * Returns all available jobGroups
      * 
      * @return
      *     returns java.util.List<it.polito.dp2.PJS.sol6.client1.wsimport.GetJobGroupsResponse.Return>
@@ -70,6 +50,7 @@ public interface PJSMaster {
     public List<it.polito.dp2.PJS.sol6.client1.wsimport.GetJobGroupsResponse.Return> getJobGroups();
 
     /**
+     * Returns all available jobs
      * 
      * @return
      *     returns java.util.List<it.polito.dp2.PJS.sol6.client1.wsimport.GetJobsResponse.Return>
@@ -81,6 +62,7 @@ public interface PJSMaster {
     public List<it.polito.dp2.PJS.sol6.client1.wsimport.GetJobsResponse.Return> getJobs();
 
     /**
+     * Returns the master host
      * 
      * @return
      *     returns it.polito.dp2.PJS.sol6.client1.wsimport.GetMasterHostResponse.Return
@@ -92,6 +74,7 @@ public interface PJSMaster {
     public it.polito.dp2.PJS.sol6.client1.wsimport.GetMasterHostResponse.Return getMasterHost();
 
     /**
+     * Returns the cluster name
      * 
      * @return
      *     returns java.lang.String
@@ -103,6 +86,7 @@ public interface PJSMaster {
     public String getClusterName();
 
     /**
+     * Returns the cluster status
      * 
      * @return
      *     returns it.polito.dp2.PJS.sol6.client1.wsimport.ClusterStatus
@@ -114,6 +98,7 @@ public interface PJSMaster {
     public ClusterStatus getClusterStatus();
 
     /**
+     * Returns names of all available hosts
      * 
      * @return
      *     returns java.util.List<java.lang.String>
@@ -125,6 +110,47 @@ public interface PJSMaster {
     public List<String> getHostNames();
 
     /**
+     * Submit a new job
+     * 
+     * @param arg2
+     * @param arg1
+     * @param arg0
+     * @return
+     *     returns int
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "submit", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.Submit")
+    @ResponseWrapper(localName = "submitResponse", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.SubmitResponse")
+    public int submit(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        String arg1,
+        @WebParam(name = "arg2", targetNamespace = "")
+        String arg2);
+
+    /**
+     * Callback function: PJSDispatch declares a job
+     * 				terminated
+     * 
+     * @param arg2
+     * @param arg1
+     * @param arg0
+     */
+    @WebMethod
+    @Oneway
+    @RequestWrapper(localName = "endJob", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.EndJob")
+    public void endJob(
+        @WebParam(name = "arg0", targetNamespace = "")
+        BigInteger arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        int arg1,
+        @WebParam(name = "arg2", targetNamespace = "")
+        String arg2);
+
+    /**
+     * Suspend a job
      * 
      * @param arg0
      */
@@ -136,6 +162,7 @@ public interface PJSMaster {
         int arg0);
 
     /**
+     * Resume a job
      * 
      * @param arg0
      */
@@ -147,6 +174,7 @@ public interface PJSMaster {
         int arg0);
 
     /**
+     * Kill a job
      * 
      * @param arg0
      */
@@ -158,6 +186,7 @@ public interface PJSMaster {
         int arg0);
 
     /**
+     * Suspend an entire jobGroup
      * 
      * @param arg0
      */
@@ -169,6 +198,7 @@ public interface PJSMaster {
         int arg0);
 
     /**
+     * Resume an entire jobGroup
      * 
      * @param arg0
      */
@@ -180,6 +210,7 @@ public interface PJSMaster {
         int arg0);
 
     /**
+     * Kill an entire jobGroup
      * 
      * @param arg0
      */
