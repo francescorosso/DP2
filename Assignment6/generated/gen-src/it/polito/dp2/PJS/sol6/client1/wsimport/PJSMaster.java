@@ -112,10 +112,10 @@ public interface PJSMaster {
     /**
      * Submit a new job
      * 
-     * @param cmd
-     * @param submissionHostName
-     * @param jobGroup
-     * @param sdtIn
+     * @param arg3
+     * @param arg2
+     * @param arg1
+     * @param arg0
      * @return
      *     returns int
      */
@@ -124,14 +124,14 @@ public interface PJSMaster {
     @RequestWrapper(localName = "submit", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.Submit")
     @ResponseWrapper(localName = "submitResponse", targetNamespace = "http://service.sol6.PJS.dp2.polito.it/", className = "it.polito.dp2.PJS.sol6.client1.wsimport.SubmitResponse")
     public int submit(
-        @WebParam(name = "submissionHostName", targetNamespace = "")
-        String submissionHostName,
-        @WebParam(name = "cmd", targetNamespace = "")
-        String cmd,
-        @WebParam(name = "sdtIn", targetNamespace = "")
-        String sdtIn,
-        @WebParam(name = "jobGroup", targetNamespace = "")
-        String jobGroup);
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        String arg1,
+        @WebParam(name = "arg2", targetNamespace = "")
+        String arg2,
+        @WebParam(name = "arg3", targetNamespace = "")
+        String arg3);
 
     /**
      * Callback function: PJSDispatch declares a job

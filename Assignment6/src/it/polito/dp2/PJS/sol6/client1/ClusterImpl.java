@@ -36,14 +36,14 @@ class ClusterImpl implements Cluster {
 	private Set<JobGroup> jobGroups;
 	private Set<Job> jobs;
 	
-	ClusterImpl(URL masterHostWSDL, URI masterHostURI) {
+	ClusterImpl(URL masterHostWSDL, URI masterHostURI) throws Exception {
 		this.masterHostWSDL = masterHostWSDL;
 		this.masterHostURI = masterHostURI;
 		
 		this.update();
 	}
 	
-	private void update() {
+	private void update() throws Exception {
 		QName qname = new QName("http://service.sol6.PJS.dp2.polito.it/", "PJSMasterService");
 		PJSMasterService masterHostService = new PJSMasterService(masterHostWSDL, qname);
 		PJSMaster masterHostPort = masterHostService.getPJSMasterPort();
@@ -56,120 +56,108 @@ class ClusterImpl implements Cluster {
 		this.updateJobs(masterHostPort);
 	}
 	
-	private void updateClusterInfo(PJSMaster masterHostPort) {
-		try {
-			this.name = masterHostPort.getClusterName();
-			this.status = ClusterStatus.valueOf(masterHostPort.getClusterStatus().toString());
-			
-			GetMasterHostResponse.Return hostElement = masterHostPort.getMasterHost();
-			String name = hostElement.getName();
-			String type = hostElement.getType().toString();
-			String status = hostElement.getStatus().toString();
-			int physicalMemory = hostElement.getMemory().intValue();
-			int load = hostElement.getLoad().intValue();
-			Host host = new HostImpl(name, type, status, physicalMemory, load);
+	private void updateClusterInfo(PJSMaster masterHostPort) throws Exception {
+		this.name = masterHostPort.getClusterName();
+		this.status = ClusterStatus.valueOf(masterHostPort.getClusterStatus().toString());
+		
+		GetMasterHostResponse.Return hostElement = masterHostPort.getMasterHost();
+		String name = hostElement.getName();
+		String type = hostElement.getType().toString();
+		String status = hostElement.getStatus().toString();
+		int physicalMemory = hostElement.getMemory().intValue();
+		int load = hostElement.getLoad().intValue();
+		Host host = new HostImpl(name, type, status, physicalMemory, load);
 
-			this.masterHost = host;
-		} catch (InvalidParameterException e) {
-			System.err.println("Host is not parsable, skipping...");
-		}
+		this.masterHost = host;
 	}
 	
-	private void updateHosts(PJSMaster masterHostPort) {
+	private void updateHosts(PJSMaster masterHostPort) throws Exception {
 		//extract all hosts
 		Set<Host> hosts = new HashSet<Host>();
 		
-		try {
-			if (masterHostPort != null && masterHostPort.getHostNames() != null) {
-				List<String> hostNames = masterHostPort.getHostNames();
-				if (!hostNames.isEmpty()) {
-					List<GetHostsResponse.Return> response = masterHostPort.getHosts(hostNames);
-					if (response != null) {
-						for (GetHostsResponse.Return hostElement : response) {
-							String name = hostElement.getName();
-							String type = hostElement.getType().toString();
-							String status = hostElement.getStatus().toString();
-							int physicalMemory = hostElement.getMemory().intValue();
-							int load = hostElement.getLoad().intValue();
-							
-							try {
-								Host host = new HostImpl(name, type, status, physicalMemory, load);
-								hosts.add(host);
-							} catch (InvalidParameterException e) {
-								System.err.println("Host is not parsable, skipping...");
-							}
+		if (masterHostPort != null && masterHostPort.getHostNames() != null) {
+			List<String> hostNames = masterHostPort.getHostNames();
+			if (!hostNames.isEmpty()) {
+				List<GetHostsResponse.Return> response = masterHostPort.getHosts(hostNames);
+				if (response != null) {
+					for (GetHostsResponse.Return hostElement : response) {
+						String name = hostElement.getName();
+						String type = hostElement.getType().toString();
+						String status = hostElement.getStatus().toString();
+						int physicalMemory = hostElement.getMemory().intValue();
+						int load = hostElement.getLoad().intValue();
+						
+						try {
+							Host host = new HostImpl(name, type, status, physicalMemory, load);
+							hosts.add(host);
+						} catch (InvalidParameterException e) {
+							System.err.println("Host is not parsable, skipping...");
 						}
 					}
 				}
 			}
-			this.hosts = hosts;
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
 		}
+		this.hosts = hosts;
 	}
 	
-	private void updateJobGroups(PJSMaster masterHostPort) {
+	private void updateJobGroups(PJSMaster masterHostPort) throws Exception {
 		//extract all jobGroups
 		Set<JobGroup> jobGroups = new HashSet<JobGroup>();
 		
-		try {
-			if (masterHostPort != null) {
-				List<GetJobGroupsResponse.Return> response = masterHostPort.getJobGroups();
-				if (response != null) {
-					for (GetJobGroupsResponse.Return jobGroupElement : response) {
-						String name = jobGroupElement.getName();
-						String description = jobGroupElement.getDescription();
-						
-						try {
-							JobGroup jobGroup = new JobGroupImpl(name, description);
-							jobGroups.add(jobGroup);
-						} catch (InvalidParameterException e) {
-							System.err.println("JobGroup not parsable, skipping...");
-						}
+		if (masterHostPort != null) {
+			List<GetJobGroupsResponse.Return> response = masterHostPort.getJobGroups();
+			if (response != null) {
+				for (GetJobGroupsResponse.Return jobGroupElement : response) {
+					String name = jobGroupElement.getName();
+					String description = jobGroupElement.getDescription();
+					
+					try {
+						JobGroup jobGroup = new JobGroupImpl(name, description);
+						jobGroups.add(jobGroup);
+					} catch (InvalidParameterException e) {
+						System.err.println("JobGroup not parsable, skipping...");
 					}
 				}
 			}
-			this.jobGroups = jobGroups;
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
 		}
+		this.jobGroups = jobGroups;
 	}
 	
-	private void updateJobs(PJSMaster masterHostPort) {
+	private void updateJobs(PJSMaster masterHostPort) throws Exception {
 		//extract all jobs
 		Set<Job> jobs = new HashSet<Job>();
-		try {
-			if (masterHostPort != null) {
-				List<GetJobsResponse.Return> response = masterHostPort.getJobs();
-				if (response != null) {
-					for (GetJobsResponse.Return jobElement : response) {
-						String jobID = jobElement.getJobID();
-						String state = jobElement.getState().toString();
-						String submissionHost = jobElement.getSubmissionHost();
-						long submissionTime = jobElement.getSubmissionTime();
-						String jobGroup = jobElement.getJobGroup();
-						String executionHost = jobElement.getExecutionHost();
-						
-						if (!jobID.startsWith("_"))
-							jobID = "_" + jobID;
-						
-						try {
-							Job job = new JobImpl(jobID, state, submissionHost, submissionTime, jobGroup, executionHost);
-							jobs.add(job);
-						} catch (InvalidParameterException e) {
-							System.err.println("Job not parsable, skipping...");
-						}
+		if (masterHostPort != null) {
+			List<GetJobsResponse.Return> response = masterHostPort.getJobs();
+			if (response != null) {
+				for (GetJobsResponse.Return jobElement : response) {
+					String jobID = jobElement.getJobID();
+					String state = jobElement.getState().toString();
+					String submissionHost = jobElement.getSubmissionHost();
+					long submissionTime = jobElement.getSubmissionTime();
+					String jobGroup = jobElement.getJobGroup();
+					String executionHost = jobElement.getExecutionHost();
+					
+					if (!jobID.startsWith("_"))
+						jobID = "_" + jobID;
+					
+					try {
+						Job job = new JobImpl(jobID, state, submissionHost, submissionTime, jobGroup, executionHost);
+						jobs.add(job);
+					} catch (InvalidParameterException e) {
+						System.err.println("Job not parsable, skipping...");
 					}
 				}
 			}
-			this.jobs = jobs;
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		this.jobs = jobs;
 	}
 	
 	private Host getHost(String name) {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		for (Host host : this.hosts)
 			if (host.getName().equals(name))
 				return host;
@@ -177,7 +165,11 @@ class ClusterImpl implements Cluster {
 	}
 	
 	private JobGroup getJobGroup(String name) {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		for (JobGroup jobGroup : this.jobGroups)
 			if (jobGroup.getName().equals(name))
 				return jobGroup;
@@ -186,7 +178,11 @@ class ClusterImpl implements Cluster {
 	
 	@Override
 	public JobGroup getDefaultJobGroup() {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		for (JobGroup jobGroup : this.jobGroups) {
 			if (jobGroup.getName().equals("default")) {
 				return jobGroup;
@@ -197,19 +193,31 @@ class ClusterImpl implements Cluster {
 
 	@Override
 	public Set<Host> getHosts() {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		return this.hosts;
 	}
 
 	@Override
 	public Set<JobGroup> getJobGroups() {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		return this.jobGroups;
 	}
 
 	@Override
 	public Set<Job> getJobs(boolean hist) {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		if (hist) {
 			return this.jobs;
 		} else {
@@ -243,19 +251,31 @@ class ClusterImpl implements Cluster {
 
 	@Override
 	public int getNumberOfHosts() {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		return hosts.size();
 	}
 
 	@Override
 	public int getNumberOfServers() {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		return this.getServers().size();
 	}
 
 	@Override
 	public Set<Host> getServers() {
-		this.update();
+		try {
+			this.update();
+		} catch (Exception e) {
+			System.err.println("Unable to update cluster infos... Returning old ones...");
+		}
 		Set<Host> servers = new HashSet<Host>();
 		for (Host host : this.hosts)
 			if (host.isServer())
