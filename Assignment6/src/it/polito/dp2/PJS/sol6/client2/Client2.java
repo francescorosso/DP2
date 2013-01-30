@@ -32,7 +32,7 @@ public class Client2 implements Submit {
 			}
 		}
 		
-		int jobNumber = port.submit(host, cmdline, stdin);
+		int jobNumber = port.submit(host, cmdline, stdin, "default");
 		return jobNumber;
 	}
 }

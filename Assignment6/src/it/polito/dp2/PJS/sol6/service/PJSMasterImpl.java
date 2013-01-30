@@ -111,7 +111,8 @@ public class PJSMasterImpl implements PJSMaster {
 	
 	@Override
 	@WebMethod
-	public synchronized int submit(String submissionHost, String cmd, String stdin) {
+	public synchronized int submit(String submissionHost, String cmd, String stdin, String jobGroup) {
+		//TODO handle jobGroup...
 		System.out.println("Submitting\nSubmission host: " + submissionHost + "\nCommand: " + cmd + "\nStdIn: " + stdin);
 		
 		// sort hosts

@@ -36,7 +36,7 @@ public interface PJSMaster {
 	public Job[] getJobs();
 	
 	@WebMethod
-	public int submit(String submissionHost, String cmd, String stdin);
+	public int submit(String submissionHost, String cmd, String stdin, String jobGroup);
 	
 	@WebMethod
 	@Oneway

@@ -16,9 +16,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="arg2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="submissionHostName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="cmd" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="sdtIn" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="jobGroup" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,86 +30,112 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "submit", propOrder = {
-    "arg0",
-    "arg1",
-    "arg2"
+    "submissionHostName",
+    "cmd",
+    "sdtIn",
+    "jobGroup"
 })
 public class Submit {
 
-    protected String arg0;
-    protected String arg1;
-    protected String arg2;
+    protected String submissionHostName;
+    protected String cmd;
+    protected String sdtIn;
+    protected String jobGroup;
 
     /**
-     * Gets the value of the arg0 property.
+     * Gets the value of the submissionHostName property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getArg0() {
-        return arg0;
+    public String getSubmissionHostName() {
+        return submissionHostName;
     }
 
     /**
-     * Sets the value of the arg0 property.
+     * Sets the value of the submissionHostName property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setArg0(String value) {
-        this.arg0 = value;
+    public void setSubmissionHostName(String value) {
+        this.submissionHostName = value;
     }
 
     /**
-     * Gets the value of the arg1 property.
+     * Gets the value of the cmd property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getArg1() {
-        return arg1;
+    public String getCmd() {
+        return cmd;
     }
 
     /**
-     * Sets the value of the arg1 property.
+     * Sets the value of the cmd property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setArg1(String value) {
-        this.arg1 = value;
+    public void setCmd(String value) {
+        this.cmd = value;
     }
 
     /**
-     * Gets the value of the arg2 property.
+     * Gets the value of the sdtIn property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getArg2() {
-        return arg2;
+    public String getSdtIn() {
+        return sdtIn;
     }
 
     /**
-     * Sets the value of the arg2 property.
+     * Sets the value of the sdtIn property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setArg2(String value) {
-        this.arg2 = value;
+    public void setSdtIn(String value) {
+        this.sdtIn = value;
+    }
+
+    /**
+     * Gets the value of the jobGroup property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getJobGroup() {
+        return jobGroup;
+    }
+
+    /**
+     * Sets the value of the jobGroup property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setJobGroup(String value) {
+        this.jobGroup = value;
     }
 
 }

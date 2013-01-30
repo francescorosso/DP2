@@ -222,9 +222,11 @@
 
 			<xs:complexType name="submit">
 				<xs:sequence>
-					<xs:element name="arg0" type="xs:string" minOccurs="0" />
-					<xs:element name="arg1" type="xs:string" minOccurs="0" />
-					<xs:element name="arg2" type="xs:string" minOccurs="0" />
+					<xs:element name="submissionHostName" type="xs:string"
+						minOccurs="0" />
+					<xs:element name="cmd" type="xs:string" minOccurs="0" />
+					<xs:element name="sdtIn" type="xs:string" minOccurs="0" />
+					<xs:element name="jobGroup" type="xs:string" minOccurs="0" />
 				</xs:sequence>
 			</xs:complexType>
 
@@ -335,7 +337,8 @@
 		<part name="parameters" element="tns:getHostNamesResponse" />
 	</message>
 	<message name="submit">
-		<documentation>Submit a new job (request) - @Arg cmd @Arg stdin.
+		<documentation>Submit a new job (request) - @Arg submissionHostName
+			@Arg cmd @Arg stdin @Arg jobGroup.
 		</documentation>
 		<part name="parameters" element="tns:submit" />
 	</message>
@@ -450,7 +453,8 @@
 		</operation>
 		<operation name="endJob">
 			<documentation>Callback function: PJSDispatch declares a job
-				terminated</documentation>
+				terminated
+			</documentation>
 			<input wsam:Action="http://service.sol6.PJS.dp2.polito.it/PJSMaster/endJob"
 				message="tns:endJob" />
 		</operation>
@@ -488,7 +492,8 @@
 		</operation>
 	</portType>
 	<binding name="PJSMasterPortBinding" type="tns:PJSMaster">
-		<documentation>Port Bindings... All literal (useless do it encoded, this is a demonstrative web service)</documentation>
+		<documentation>Port Bindings... All literal (useless do it encoded,
+			this is a demonstrative web service)</documentation>
 		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
 			style="document" />
 		<operation name="getHosts">
