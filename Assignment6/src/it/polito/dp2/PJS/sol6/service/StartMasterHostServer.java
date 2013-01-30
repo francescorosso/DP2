@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -121,7 +122,9 @@ public class StartMasterHostServer {
 		
 		@Override
 		public void run() {
-			Endpoint.publish(address, implementor);
+			Endpoint endpoint = Endpoint.create(implementor);
+			endpoint.setExecutor(Executors.newFixedThreadPool(10));
+			endpoint.publish(address);
 		}
 	}
 }

@@ -1,0 +1,10 @@
+build-all
+build-server
+clean
+compile-client-1
+compile-client-2
+compile-generated
+compile-src
+generate-artifacts
+init
+run-server
